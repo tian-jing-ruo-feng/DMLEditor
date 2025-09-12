@@ -1,5 +1,5 @@
 <template>
-  <el-card class="table-node" shadow="hover">
+  <el-card class="table-node" shadow="always">
     <template #header>
       <div class="table-header">
         <span class="table-name">{{ table.name }}</span>
@@ -20,25 +20,52 @@
   </el-card>
 </template>
 
-<script lang="ts" setup>
-defineProps<{
-  table: {
-    id: string;
-    name: string;
-    comment?: string;
-    fields: Array<{
-      name: string;
-      type: string;
-      primaryKey: boolean;
-      notNull: boolean;
-    }>;
-    x: number;
-    y: number;
-  };
-}>();
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'TableNode',
+  inject: ['getNode'],
+  data() {
+    return {
+      table: {
+        id: '1',
+        name: 'user',     
+        comment: '用户表',
+        fields: [
+          {
+            name: 'id',
+            type: 'int',
+            primaryKey: true,
+            notNull: true,
+          },
+          {
+            name: 'name',
+            type: 'varchar(255)',
+            primaryKey: false,    
+            notNull: false,
+          },
+          {
+            name: 'age',      
+            type: 'int',
+            primaryKey: false,    
+            notNull: false,
+          },
+        ],
+        x: 0,
+        y: 0,
+      },
+    };
+  },
+  mounted() {
+    const node = (this as any).getNode()
+    console.log(node)
+    this.table = node.data
+  },
+})
 </script>
 
-<style scoped>
+<style>
 .table-node {
   width: 240px;
   border-radius: 4px;

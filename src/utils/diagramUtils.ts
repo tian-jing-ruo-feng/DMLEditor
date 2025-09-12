@@ -17,26 +17,27 @@ export const createTableNode = ({ id, name, comment, fields, x, y }: {
   x: number;
   y: number;
 }) => {
-  return new Shape.HTML({
+  return ({
     id,
     x,
     y,
     width: 240,
     height: 40 + fields.length * 32,
-    html: {
-      template: `<TableNode :table="table" />`,
-      components: { TableNode },
-      data: () => ({
-        table: {
-          id,
-          name,
-          comment,
-          fields,
-          x,
-          y
-        }
-      })
-    },
+    shape: 'custom-vue-node',
+    // html: {
+    //   template: `<TableNode :table="table" />`,
+    //   components: { TableNode },
+    //   data: () => ({
+    //     table: {
+    //       id,
+    //       name,
+    //       comment,
+    //       fields,
+    //       x,
+    //       y
+    //     }
+    //   })
+    // },
     props: {
       table: {
         id,
@@ -80,6 +81,7 @@ export const createTableNode = ({ id, name, comment, fields, x, y }: {
       ]
     },
     data: {
+      id,
       name,
       comment,
       fields

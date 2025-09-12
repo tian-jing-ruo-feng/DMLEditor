@@ -46,6 +46,9 @@
         @update-edge="updateEdge"
       />
     </div>
+
+    <TableNodeContainer />
+    <!-- <TeleportContainer /> -->
   </div>
 </template>
 
@@ -58,13 +61,33 @@ import EditorToolbox from '../components/diagram/EditorToolbox.vue';
 import EditorProperties from '../components/diagram/EditorProperties.vue';
 import { ElMessage } from 'element-plus';
 import { createTableNode, createRelationEdge } from '../utils/diagramUtils';
+import { register, getTeleport } from '@antv/x6-vue-shape'
+import TableNode from '@/components/TableNode.vue';
+import ProgressNode from '@/components/ProgressNode.vue';
+
+register({
+    shape: 'custom-vue-node',
+    width: 100,
+    height: 100,
+    component: TableNode,
+  })
+const TableNodeContainer = getTeleport()
+// register({
+//     shape: 'custom-vue-node',
+//     width: 100,
+//     height: 100,
+//     component: ProgressNode,
+//   })
+// const TeleportContainer = getTeleport()
 
 export default defineComponent({
   name: 'ModelEditor',
   components: {
     EditorHeader,
     EditorToolbox,
-    EditorProperties
+    EditorProperties,
+    TableNodeContainer,
+    // TeleportContainer
   },
   props: {
     id: {
@@ -125,7 +148,7 @@ export default defineComponent({
             visible: true,
             type: 'dot',
             size: 10,
-            color: '#E5E7EB'
+            // color: '#E5E7EB'
           },
           connecting: {
             router: 'manhattan',
@@ -200,11 +223,11 @@ export default defineComponent({
             minScale: 0.5,
             maxScale: 3
           },
-          selecting: {
-            enabled: true,
-            rubberband: true,
-            showNodeSelectionBox: true
-          },
+          // selecting: {
+          //   enabled: true,
+          //   rubberband: true,
+          //   showNodeSelectionBox: true
+          // },
           snapline: true,
           history: true,
           clipboard: true,

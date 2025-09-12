@@ -11,6 +11,9 @@ importers:
       '@antv/x6':
         specifier: ^2.0.0
         version: 2.18.1
+      '@antv/x6-vue-shape':
+        specifier: ^2.0.0
+        version: 2.1.2(@antv/x6@2.18.1)(vue@3.5.21(typescript@5.9.2))
       '@element-plus/icons-vue':
         specifier: ^2.1.0
         version: 2.3.2(vue@3.5.21(typescript@5.9.2))
@@ -63,6 +66,16 @@ packages:
 
   '@antv/x6-geometry@2.0.5':
     resolution: {integrity: sha512-MId6riEQkxphBpVeTcL4ZNXL4lScyvDEPLyIafvWMcWNTGK0jgkK7N20XSzqt8ltJb0mGUso5s56mrk8ysHu2A==}
+
+  '@antv/x6-vue-shape@2.1.2':
+    resolution: {integrity: sha512-lfLNJ2ztK8NP2JBAWTD6m5Wol0u6tOqj2KdOhWZoT8EtEw9rMmAdxsr8uTi9MRJO9pDMM0nbsR3cidnMh7VeDQ==}
+    peerDependencies:
+      '@antv/x6': ^2.x
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^2.0.0 || >=3.0.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
 
   '@antv/x6@2.18.1':
     resolution: {integrity: sha512-FkWdbLOpN9J7dfJ+kiBxzowSx2N6syBily13NMVdMs+wqC6Eo5sLXWCZjQHateTFWgFw7ZGi2y9o3Pmdov1sXw==}
@@ -1305,6 +1318,12 @@ snapshots:
 
   '@antv/x6-geometry@2.0.5': {}
 
+  '@antv/x6-vue-shape@2.1.2(@antv/x6@2.18.1)(vue@3.5.21(typescript@5.9.2))':
+    dependencies:
+      '@antv/x6': 2.18.1
+      vue: 3.5.21(typescript@5.9.2)
+      vue-demi: 0.14.10(vue@3.5.21(typescript@5.9.2))
+
   '@antv/x6@2.18.1':
     dependencies:
       '@antv/x6-common': 2.0.17
@@ -2076,7 +2095,7 @@ snapshots:
   enhanced-resolve@5.12.0:
     dependencies:
       graceful-fs: 4.2.10
-      tapable: 2.2.1
+      tapable: 2.2.3
 
   enhanced-resolve@5.18.3:
     dependencies:
