@@ -1,0 +1,28 @@
+{
+  "name": "database-modeler",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "rsbuild dev",
+    "build": "rsbuild build",
+    "preview": "rsbuild preview"
+  },
+  "dependencies": {
+    "@antv/x6": "^2.0.0",
+    "@element-plus/icons-vue": "^2.1.0",
+    "@rsbuild/plugin-babel": "^1.0.6",
+    "element-plus": "^2.11.2",
+    "pinia": "^2.1.0",
+    "vue": "^3.5.21",
+    "vue-router": "^4.2.0"
+  },
+  "devDependencies": {
+    "@rsbuild/core": "^0.5.0",
+    "@rsbuild/plugin-vue": "^0.5.0",
+    "@types/node": "^20.0.0",
+    "autoprefixer": "^10.0.0",
+    "postcss": "^8.0.0",
+    "tailwindcss": "^3.0.0",
+    "typescript": "^5.0.0"
+  }
+}
