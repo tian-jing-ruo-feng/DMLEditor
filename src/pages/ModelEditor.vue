@@ -80,17 +80,7 @@ const props = defineProps<{
 // 初始化
 const route = useRoute();
 const graphContainer = ref<HTMLElement | null>(null);
-const graph = ref<Graph & {
-  canUndo: () => boolean;
-  canRedo: () => boolean;
-  cleanSelection: () => void;
-  select: (cell: Cell) => void;
-  undo: () => void;
-  redo: () => void;
-  zoomTo: (scale: number) => void;
-  centerContent: () => void;
-  zoom: () => number;
-} | null>(null);
+const graph = ref<Graph | null>(null);
 const projectName = ref('未命名项目');
 const selectedCell = ref<Cell | null>(null);
 const canUndo = ref(false);
@@ -216,9 +206,13 @@ onMounted(() => {
         minScale: 0.5,
         maxScale: 3
       },
-      // @ts-ignore - X6类型定义不完整
       snapline: true,
-      history: true,
+      history: {
+        enabled: true,
+        ignoreAdd: false,
+        ignoreRemove: false,
+        ignoreChange: false
+      },
       clipboard: true,
       keyboard: true
     });
@@ -249,8 +243,8 @@ onMounted(() => {
 
     // 监听历史状态变化
     graph.value.on('history:change', () => {
-      canUndo.value = graph.value?.canUndo() || false;
-      canRedo.value = graph.value?.canRedo() || false;
+      canUndo.value = graph.value?.historyManager.canUndo() || false;
+      canRedo.value = graph.value?.historyManager.canRedo() || false;
     });
 
     // 加载项目数据
