@@ -43,22 +43,13 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import { Grid, Document } from '@element-plus/icons-vue';
 
-export default defineComponent({
-  name: 'EditorToolbox',
-  components: {
-    Grid,
-    Document
-  },
-  emits: ['add-table', 'add-note', 'set-edge-type'],
-  setup() {
-    return {
-      Grid,
-      Document
-    };
-  }
-});
+// 定义事件
+defineEmits<{
+  'add-table': [];
+  'add-note': [];
+  'set-edge-type': [type: string];
+}>();
 </script>

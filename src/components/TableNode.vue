@@ -20,49 +20,64 @@
   </el-card>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { ref, reactive, onMounted, inject } from 'vue';
 
-export default defineComponent({
-  name: 'TableNode',
-  inject: ['getNode'],
-  data() {
-    return {
-      table: {
-        id: '1',
-        name: 'user',     
-        comment: '用户表',
-        fields: [
-          {
-            name: 'id',
-            type: 'int',
-            primaryKey: true,
-            notNull: true,
-          },
-          {
-            name: 'name',
-            type: 'varchar(255)',
-            primaryKey: false,    
-            notNull: false,
-          },
-          {
-            name: 'age',      
-            type: 'int',
-            primaryKey: false,    
-            notNull: false,
-          },
-        ],
-        x: 0,
-        y: 0,
-      },
-    };
-  },
-  mounted() {
-    const node = (this as any).getNode()
-    console.log(node)
-    this.table = node.data
-  },
-})
+// 定义类型
+interface Field {
+  name: string;
+  type: string;
+  primaryKey: boolean;
+  notNull: boolean;
+}
+
+interface Table {
+  id: string;
+  name: string;
+  comment: string;
+  fields: Field[];
+  x: number;
+  y: number;
+}
+
+// 注入依赖
+const getNode = inject('getNode') as () => any;
+
+// 响应式数据
+const table = reactive<Table>({
+  id: '1',
+  name: 'user',     
+  comment: '用户表',
+  fields: [
+    {
+      name: 'id',
+      type: 'int',
+      primaryKey: true,
+      notNull: true,
+    },
+    {
+      name: 'name',
+      type: 'varchar(255)',
+      primaryKey: false,    
+      notNull: false,
+    },
+    {
+      name: 'age',      
+      type: 'int',
+      primaryKey: false,    
+      notNull: false,
+    },
+  ],
+  x: 0,
+  y: 0,
+});
+
+// 生命周期钩子
+onMounted(() => {
+  const node = getNode();
+  console.log(node);
+  Object.assign(table, node.data);
+});
 </script>
 
 <style>

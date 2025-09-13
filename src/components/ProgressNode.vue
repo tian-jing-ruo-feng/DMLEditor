@@ -6,20 +6,18 @@
   </el-progress>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted, inject } from 'vue'
 
-  export default defineComponent({
-    name: 'ProgressNode',
-    inject: ['getNode'],
-    data() {
-      return {
-        percentage: 80,
-      }
-    },
-    mounted() {
-      const node = (this as any).getNode()
-      console.log(node)
-    },
-  })
+// 注入依赖
+const getNode = inject('getNode') as () => any
+
+// 响应式数据
+const percentage = ref(80)
+
+// 生命周期钩子
+onMounted(() => {
+  const node = getNode()
+  console.log(node)
+})
 </script>

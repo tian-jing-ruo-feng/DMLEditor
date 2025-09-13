@@ -38,62 +38,44 @@
   </header>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
 import { Back, Right, ZoomIn, ZoomOut, Refresh, ArrowDown } from '@element-plus/icons-vue';
 
-export default defineComponent({
-  name: 'EditorHeader',
-  components: {
-    Back, Right, ZoomIn, ZoomOut, Refresh, ArrowDown
-  },
-  props: {
-    projectName: {
-      type: String,
-      required: true
-    },
-    canUndo: {
-      type: Boolean,
-      default: false
-    },
-    canRedo: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: [
-    'update:project-name',
-    'reset-view',
-    'zoom-in',
-    'zoom-out',
-    'undo',
-    'redo',
-    'export-sql',
-    'export-image',
-    'export-json',
-    'save'
-  ],
-  setup(props, { emit }) {
-    const localProjectName = ref(props.projectName);
-
-    watch(() => props.projectName, (newVal) => {
-      localProjectName.value = newVal;
-    });
-
-    const updateProjectName = () => {
-      emit('update:project-name', localProjectName.value);
-    };
-
-    return {
-      localProjectName,
-      updateProjectName,
-      Back,
-      Right,
-      ZoomIn,
-      ZoomOut,
-      Refresh,
-      ArrowDown
-    };
-  }
+// 定义属性并设置默认值
+const props = withDefaults(defineProps<{
+  projectName: string;
+  canUndo?: boolean;
+  canRedo?: boolean;
+}>(), {
+  canUndo: false,
+  canRedo: false
 });
+
+// 定义事件
+const emit = defineEmits<{
+  'update:project-name': [value: string];
+  'reset-view': [];
+  'zoom-in': [];
+  'zoom-out': [];
+  'undo': [];
+  'redo': [];
+  'export-sql': [];
+  'export-image': [];
+  'export-json': [];
+  'save': [];
+}>();
+
+// 响应式数据
+const localProjectName = ref(props.projectName);
+
+// 监听属性变化
+watch(() => props.projectName, (newVal) => {
+  localProjectName.value = newVal;
+});
+
+// 方法定义
+const updateProjectName = () => {
+  emit('update:project-name', localProjectName.value);
+};
 </script>

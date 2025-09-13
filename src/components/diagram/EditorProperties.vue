@@ -77,110 +77,103 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, reactive, watch } from 'vue';
+<script setup lang="ts">
+import { reactive, watch } from 'vue';
 import { InfoFilled } from '@element-plus/icons-vue';
 import { Cell } from '@antv/x6';
 
-export default defineComponent({
-  name: 'EditorProperties',
-  components: {
-    InfoFilled
-  },
-  props: {
-    selectedCell: {
-      type: Object as () => Cell | null,
-      default: null
-    },
-    tableProps: {
-      type: Object,
-      required: true
-    },
-    edgeProps: {
-      type: Object,
-      required: true
-    },
-    dataTypes: {
-      type: Array as () => string[],
-      required: true
-    }
-  },
-  emits: [
-    'update-table',
-    'update-table-name',
-    'update-table-comment',
-    'add-field',
-    'remove-field',
-    'update-edge-type',
-    'update-edge'
-  ],
-  setup(props, { emit }) {
-    const localTableProps = reactive({
-      id: '',
-      name: '',
-      comment: '',
-      fields: [] as Array<{
-        name: string;
-        type: string;
-        primaryKey: boolean;
-        notNull: boolean;
-      }>
-    });
+// 定义属性
+interface TableField {
+  name: string;
+  type: string;
+  primaryKey: boolean;
+  notNull: boolean;
+}
 
-    const localEdgeProps = reactive({
-      id: '',
-      type: 'oneToMany',
-      sourceField: '',
-      targetField: '',
-      comment: ''
-    });
+interface TableProps {
+  id: string;
+  name: string;
+  comment: string;
+  fields: TableField[];
+}
 
-    // 监听表属性变化
-    watch(() => props.tableProps, (newVal) => {
-      localTableProps.id = newVal.id;
-      localTableProps.name = newVal.name;
-      localTableProps.comment = newVal.comment;
-      localTableProps.fields = [...newVal.fields];
-    }, { deep: true });
+interface EdgeProps {
+  id: string;
+  type: string;
+  sourceField: string;
+  targetField: string;
+  comment: string;
+}
 
-    // 监听边属性变化
-    watch(() => props.edgeProps, (newVal) => {
-      localEdgeProps.id = newVal.id;
-      localEdgeProps.type = newVal.type;
-      localEdgeProps.sourceField = newVal.sourceField;
-      localEdgeProps.targetField = newVal.targetField;
-      localEdgeProps.comment = newVal.comment;
-    }, { deep: true });
+const props = defineProps<{
+  selectedCell: Cell | null;
+  tableProps: TableProps;
+  edgeProps: EdgeProps;
+  dataTypes: string[];
+}>();
 
-    const updateTable = () => {
-      emit('update-table');
-    };
+// 定义事件
+const emit = defineEmits<{
+  'update-table': [];
+  'update-table-name': [];
+  'update-table-comment': [];
+  'add-field': [];
+  'remove-field': [index: number];
+  'update-edge-type': [];
+  'update-edge': [];
+}>();
 
-    const updateTableName = () => {
-      emit('update-table-name');
-    };
-
-    const updateTableComment = () => {
-      emit('update-table-comment');
-    };
-
-    const updateEdgeType = () => {
-      emit('update-edge-type');
-    };
-
-    const updateEdge = () => {
-      emit('update-edge');
-    };
-
-    return {
-      localTableProps,
-      localEdgeProps,
-      updateTable,
-      updateTableName,
-      updateTableComment,
-      updateEdgeType,
-      updateEdge
-    };
-  }
+// 本地响应式状态
+const localTableProps = reactive<TableProps>({
+  id: '',
+  name: '',
+  comment: '',
+  fields: []
 });
+
+const localEdgeProps = reactive<EdgeProps>({
+  id: '',
+  type: 'oneToMany',
+  sourceField: '',
+  targetField: '',
+  comment: ''
+});
+
+// 监听表属性变化
+watch(() => props.tableProps, (newVal) => {
+  localTableProps.id = newVal.id;
+  localTableProps.name = newVal.name;
+  localTableProps.comment = newVal.comment;
+  localTableProps.fields = [...newVal.fields];
+}, { deep: true });
+
+// 监听边属性变化
+watch(() => props.edgeProps, (newVal) => {
+  localEdgeProps.id = newVal.id;
+  localEdgeProps.type = newVal.type;
+  localEdgeProps.sourceField = newVal.sourceField;
+  localEdgeProps.targetField = newVal.targetField;
+  localEdgeProps.comment = newVal.comment;
+}, { deep: true });
+
+// 方法定义
+const updateTable = () => {
+  emit('update-table');
+};
+
+const updateTableName = () => {
+  emit('update-table-name');
+};
+
+const updateTableComment = () => {
+  emit('update-table-comment');
+};
+
+const updateEdgeType = () => {
+  emit('update-edge-type');
+};
+
+const updateEdge = () => {
+  emit('update-edge');
+};
 </script>
