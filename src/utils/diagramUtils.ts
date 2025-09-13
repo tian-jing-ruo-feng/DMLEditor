@@ -24,20 +24,6 @@ export const createTableNode = ({ id, name, comment, fields, x, y }: {
     width: 240,
     height: 40 + fields.length * 32,
     shape: 'custom-vue-node',
-    // html: {
-    //   template: `<TableNode :table="table" />`,
-    //   components: { TableNode },
-    //   data: () => ({
-    //     table: {
-    //       id,
-    //       name,
-    //       comment,
-    //       fields,
-    //       x,
-    //       y
-    //     }
-    //   })
-    // },
     props: {
       table: {
         id,
