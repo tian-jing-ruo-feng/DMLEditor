@@ -1,4 +1,4 @@
-import { Shape } from '@antv/x6'
+import { Shape, Graph } from '@antv/x6'
 import type { TableField } from '@/types/modelEditor'
 
 /**
@@ -161,4 +161,97 @@ export const createRelationEdge = ({
       comment,
     },
   })
+}
+
+/**
+ * 初始化图表
+ * @param container 图表容器元素
+ * @param currentEdgeType 当前边类型
+ * @returns 初始化后的图表实例
+ */
+export const initializeGraph = (container: HTMLElement, currentEdgeType: string = 'oneToMany') => {
+  const graph = new Graph({
+    container,
+    grid: {
+      visible: true,
+      type: 'dot',
+      size: 10,
+    },
+    autoResize: true,
+    connecting: {
+      router: 'manhattan',
+      connector: {
+        name: 'rounded',
+        args: {
+          radius: 8,
+        },
+      },
+      anchor: 'center',
+      connectionPoint: 'boundary',
+      allowBlank: false,
+      snap: {
+        radius: 20,
+      },
+      createEdge() {
+        return new Shape.Edge({
+          attrs: {
+            line: {
+              stroke: '#5F6368',
+              strokeWidth: 2,
+              targetMarker: {
+                name: 'classic',
+                size: 8,
+              },
+            },
+          },
+          router: {
+            name: 'manhattan',
+          },
+          connector: {
+            name: 'rounded',
+            args: {
+              radius: 8,
+            },
+          },
+          zIndex: 0,
+          data: {
+            type: currentEdgeType,
+            sourceField: '',
+            targetField: '',
+            comment: '',
+          },
+        })
+      },
+      validateConnection({ sourceView, targetView, sourceMagnet, targetMagnet }) {
+        if (sourceView === targetView) {
+          return false
+        }
+        if (!sourceMagnet || !targetMagnet) {
+          return false
+        }
+        return true
+      },
+    },
+    highlighting: {
+      magnetAvailable: {
+        name: 'stroke',
+        args: {
+          padding: 4,
+          attrs: {
+            strokeWidth: 2,
+            stroke: '#4F46E5',
+          },
+        },
+      },
+    },
+    mousewheel: {
+      enabled: true,
+      zoomAtMousePosition: true,
+      modifiers: 'ctrl',
+      minScale: 0.5,
+      maxScale: 3,
+    },
+  })
+
+  return graph
 }

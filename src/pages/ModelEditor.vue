@@ -54,7 +54,8 @@ import EditorHeader from '../components/diagram/EditorHeader.vue'
 import EditorToolbox from '../components/diagram/EditorToolbox.vue'
 import EditorProperties from '../components/diagram/EditorProperties.vue'
 import { ElMessage, Table } from 'element-plus'
-import { createTableNode, createRelationEdge } from '../utils/diagramUtils'
+import { createTableNode, createRelationEdge, initializeGraph } from '../utils/diagramUtils'
+import { setupGraphEventHandlers } from '../utils/eventHandler'
 import { register, getTeleport } from '@antv/x6-vue-shape'
 import TableNode from '@/components/TableNode.vue'
 import type { EdgeProperty, TableField } from '@/types/modelEditor'
@@ -102,118 +103,12 @@ const edgeProps: EdgeProperty = reactive({
 // 初始化图表
 onMounted(() => {
   if (graphContainer.value) {
-    graph.value = new Graph({
-      container: graphContainer.value,
-      grid: {
-        visible: true,
-        type: 'dot',
-        size: 10,
-      },
-      autoResize: true,
-      connecting: {
-        router: 'manhattan',
-        connector: {
-          name: 'rounded',
-          args: {
-            radius: 8,
-          },
-        },
-        anchor: 'center',
-        connectionPoint: 'boundary',
-        allowBlank: false,
-        snap: {
-          radius: 20,
-        },
-        createEdge() {
-          return new Shape.Edge({
-            attrs: {
-              line: {
-                stroke: '#5F6368',
-                strokeWidth: 2,
-                targetMarker: {
-                  name: 'classic',
-                  size: 8,
-                },
-              },
-            },
-            router: {
-              name: 'manhattan',
-            },
-            connector: {
-              name: 'rounded',
-              args: {
-                radius: 8,
-              },
-            },
-            zIndex: 0,
-            data: {
-              type: currentEdgeType.value,
-              sourceField: '',
-              targetField: '',
-              comment: '',
-            },
-          })
-        },
-        validateConnection({ sourceView, targetView, sourceMagnet, targetMagnet }) {
-          if (sourceView === targetView) {
-            return false
-          }
-          if (!sourceMagnet || !targetMagnet) {
-            return false
-          }
-          return true
-        },
-      },
-      highlighting: {
-        magnetAvailable: {
-          name: 'stroke',
-          args: {
-            padding: 4,
-            attrs: {
-              strokeWidth: 2,
-              stroke: '#4F46E5',
-            },
-          },
-        },
-      },
-      mousewheel: {
-        enabled: true,
-        zoomAtMousePosition: true,
-        modifiers: 'ctrl',
-        minScale: 0.5,
-        maxScale: 3,
-      },
-    })
+    graph.value = initializeGraph(graphContainer.value, currentEdgeType.value)
 
-    // 监听选择变化
-    graph.value.on('cell:click', ({ cell }) => {
-      selectedCell.value = cell
-
-      if (cell.isNode()) {
-        const data = cell.getData() || {}
-        tableProps.id = cell.id as string
-        tableProps.name = data.name || '未命名表'
-        tableProps.comment = data.comment || ''
-        tableProps.fields = [...(data.fields || [])]
-      } else if (cell.isEdge()) {
-        const data = cell.getData() || {}
-        edgeProps.id = cell.id as string
-        edgeProps.type = data.type || 'oneToMany'
-        edgeProps.sourceField = data.sourceField || ''
-        edgeProps.targetField = data.targetField || ''
-        edgeProps.comment = data.comment || ''
-      }
-    })
-
-    graph.value.on('blank:click', () => {
-      selectedCell.value = null
-    })
-
-    // 监听历史状态变化
-    graph.value.on('history:change', () => {
-      canUndo.value = graph.value?.historyManager.canUndo() || false
-      canRedo.value = graph.value?.historyManager.canRedo() || false
-    })
+    // 设置图表事件监听
+    if (graph.value) {
+      setupGraphEventHandlers(graph.value, selectedCell, tableProps, edgeProps, canUndo, canRedo)
+    }
 
     // 加载项目数据
     loadProject(props.id)
