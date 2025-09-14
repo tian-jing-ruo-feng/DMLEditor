@@ -1,23 +1,25 @@
-import { Shape } from '@antv/x6';
-import TableNode from '../components/TableNode.vue';
+import { Shape } from '@antv/x6'
+import type { TableField } from '@/types/modelEditor'
 
 /**
  * 创建表节点
  */
-export const createTableNode = ({ id, name, comment, fields, x, y }: {
-  id: string;
-  name: string;
-  comment?: string;
-  fields: Array<{
-    name: string;
-    type: string;
-    primaryKey: boolean;
-    notNull: boolean;
-  }>;
-  x: number;
-  y: number;
+export const createTableNode = ({
+  id,
+  name,
+  comment,
+  fields,
+  x,
+  y,
+}: {
+  id: string
+  name: string
+  comment?: string
+  fields: Array<TableField>
+  x: number
+  y: number
 }) => {
-  return ({
+  return {
     id,
     x,
     y,
@@ -31,8 +33,8 @@ export const createTableNode = ({ id, name, comment, fields, x, y }: {
         comment,
         fields,
         x,
-        y
-      }
+        y,
+      },
     },
     ports: {
       groups: {
@@ -44,9 +46,9 @@ export const createTableNode = ({ id, name, comment, fields, x, y }: {
               magnet: true,
               stroke: '#5F6368',
               strokeWidth: 1,
-              fill: '#fff'
-            }
-          }
+              fill: '#fff',
+            },
+          },
         },
         out: {
           position: 'right',
@@ -56,50 +58,57 @@ export const createTableNode = ({ id, name, comment, fields, x, y }: {
               magnet: true,
               stroke: '#5F6368',
               strokeWidth: 1,
-              fill: '#fff'
-            }
-          }
-        }
+              fill: '#fff',
+            },
+          },
+        },
       },
       items: [
         { id: 'port-left', group: 'in' },
-        { id: 'port-right', group: 'out' }
-      ]
+        { id: 'port-right', group: 'out' },
+      ],
     },
     data: {
       id,
       name,
       comment,
-      fields
-    }
-  });
-};
+      fields,
+    },
+  }
+}
 
 /**
  * 创建关系边
  */
-export const createRelationEdge = ({ source, target, type, sourceField, targetField, comment }: {
-  source: string;
-  target: string;
-  type: string;
-  sourceField: string;
-  targetField: string;
-  comment?: string;
+export const createRelationEdge = ({
+  source,
+  target,
+  type,
+  sourceField,
+  targetField,
+  comment,
+}: {
+  source: string
+  target: string
+  type: string
+  sourceField: string
+  targetField: string
+  comment?: string
 }) => {
-  let sourceMarker = {};
-  let targetMarker = {};
-  
+  let sourceMarker = {}
+  let targetMarker = {}
+
   if (type === 'oneToOne') {
-    sourceMarker = { name: 'circle', size: 6 };
-    targetMarker = { name: 'circle', size: 6 };
+    sourceMarker = { name: 'circle', size: 6 }
+    targetMarker = { name: 'circle', size: 6 }
   } else if (type === 'oneToMany') {
-    sourceMarker = { name: 'circle', size: 6 };
-    targetMarker = { name: 'classic', size: 8 };
+    sourceMarker = { name: 'circle', size: 6 }
+    targetMarker = { name: 'classic', size: 8 }
   } else if (type === 'manyToMany') {
-    sourceMarker = { name: 'classic', size: 8 };
-    targetMarker = { name: 'classic', size: 8 };
+    sourceMarker = { name: 'classic', size: 8 }
+    targetMarker = { name: 'classic', size: 8 }
   }
-  
+
   return new Shape.Edge({
     source: { cell: source, port: 'port-right' },
     target: { cell: target, port: 'port-left' },
@@ -108,17 +117,17 @@ export const createRelationEdge = ({ source, target, type, sourceField, targetFi
         stroke: '#5F6368',
         strokeWidth: 2,
         sourceMarker,
-        targetMarker
-      }
+        targetMarker,
+      },
     },
     router: {
-      name: 'manhattan'
+      name: 'manhattan',
     },
     connector: {
       name: 'rounded',
       args: {
-        radius: 8
-      }
+        radius: 8,
+      },
     },
     labels: [
       {
@@ -129,27 +138,27 @@ export const createRelationEdge = ({ source, target, type, sourceField, targetFi
             fontSize: 12,
             textAnchor: 'middle',
             textVerticalAnchor: 'middle',
-            pointerEvents: 'none'
+            pointerEvents: 'none',
           },
           rect: {
             fill: '#fff',
             stroke: '#5F6368',
             strokeWidth: 1,
             rx: 3,
-            ry: 3
-          }
+            ry: 3,
+          },
         },
         position: {
-          distance: 0.5
-        }
-      }
+          distance: 0.5,
+        },
+      },
     ],
     zIndex: 0,
     data: {
       type,
       sourceField,
       targetField,
-      comment
-    }
-  });
-};
+      comment,
+    },
+  })
+}

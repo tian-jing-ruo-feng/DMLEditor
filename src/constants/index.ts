@@ -1,0 +1,21 @@
+// 数据类型列表
+export const dataTypes = [
+  'INT',
+  'BIGINT',
+  'SMALLINT',
+  'TINYINT',
+  'FLOAT',
+  'DOUBLE',
+  'DECIMAL',
+  'CHAR',
+  'VARCHAR',
+  'TEXT',
+  'LONGTEXT',
+  'DATE',
+  'DATETIME',
+  'TIMESTAMP',
+  'BOOLEAN',
+  'ENUM',
+  'JSON',
+  'BLOB',
+]

@@ -6,7 +6,7 @@
         <el-tag v-if="table.comment" size="small" type="info">{{ table.comment }}</el-tag>
       </div>
     </template>
-    
+
     <div class="table-fields">
       <div v-for="field in table.fields" :key="field.name" class="table-field">
         <div class="field-name">
@@ -21,32 +21,37 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, inject } from 'vue';
+import { reactive, inject, watchEffect } from 'vue'
 
 // 定义类型
 interface Field {
-  name: string;
-  type: string;
-  primaryKey: boolean;
-  notNull: boolean;
+  name: string
+  type: string
+  primaryKey: boolean
+  notNull: boolean
 }
 
 interface Table {
-  id: string;
-  name: string;
-  comment: string;
-  fields: Field[];
-  x: number;
-  y: number;
+  id: string
+  name: string
+  comment: string
+  fields: Field[]
+  x: number
+  y: number
 }
 
 // 注入依赖
-const getNode = inject('getNode') as () => any;
+const getNode = inject('getNode') as () => any
+const node = getNode()
+
+node.on('change:data', (args: any) => {
+  Object.assign(table, args.current)
+})
 
 // 响应式数据
 const table = reactive<Table>({
   id: '1',
-  name: 'user',     
+  name: 'user',
   comment: '用户表',
   fields: [
     {
@@ -58,26 +63,24 @@ const table = reactive<Table>({
     {
       name: 'name',
       type: 'varchar(255)',
-      primaryKey: false,    
+      primaryKey: false,
       notNull: false,
     },
     {
-      name: 'age',      
+      name: 'age',
       type: 'int',
-      primaryKey: false,    
+      primaryKey: false,
       notNull: false,
     },
   ],
   x: 0,
   y: 0,
-});
+})
 
-// 生命周期钩子
-onMounted(() => {
-  const node = getNode();
-  console.log(node);
-  Object.assign(table, node.data);
-});
+watchEffect(() => {
+  const node = getNode()
+  Object.assign(table, node.data)
+})
 </script>
 
 <style>

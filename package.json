@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "lint": "eslint --ext .js,.ts,.vue src --fix",
+    "format": "prettier --write src/**/*.{js,ts,vue}",
+    "lint:fix": "npm run lint && npm run format",
     "dev": "rsbuild dev",
     "build": "rsbuild build",
     "preview": "rsbuild preview"
@@ -21,8 +24,15 @@
     "@rsbuild/core": "^0.5.0",
     "@rsbuild/plugin-vue": "^0.5.0",
     "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.43.0",
+    "@typescript-eslint/parser": "^8.43.0",
     "autoprefixer": "^10.0.0",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-vue": "^10.4.0",
     "postcss": "^8.0.0",
+    "prettier": "^3.6.2",
     "tailwindcss": "^3.0.0",
     "typescript": "^5.0.0"
   }
