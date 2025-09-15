@@ -16,7 +16,7 @@
           />
         </el-select>
       </el-form-item>
-      
+
       <el-form-item label="Relation Type">
         <el-select v-model="form.type" class="w-full">
           <el-option value="oneToOne" label="One to One (1:1)" />
@@ -24,7 +24,7 @@
           <el-option value="manyToMany" label="Many to Many (N:M)" />
         </el-select>
       </el-form-item>
-      
+
       <el-form-item label="Target Table">
         <el-select v-model="form.target" class="w-full" disabled>
           <el-option :value="form.target" :label="targetTableName" />
@@ -40,12 +40,12 @@
           />
         </el-select>
       </el-form-item>
-      
+
       <el-form-item label="Comment">
         <el-input v-model="form.comment" type="textarea" :rows="2" />
       </el-form-item>
     </el-form>
-    
+
     <template #footer>
       <el-button @click="visible = false">Cancel</el-button>
       <el-button type="primary" @click="handleSubmit">Save</el-button>
@@ -54,58 +54,58 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue';
-import { useDiagramStore } from '@/stores/useDiagramStore';
+import { ref, reactive, computed } from 'vue'
+import { useDiagramStore } from '@/stores/useDiagramStore'
 
-const emit = defineEmits(['submit']);
+const emit = defineEmits(['submit'])
 
-const diagramStore = useDiagramStore();
-const visible = ref(false);
+const diagramStore = useDiagramStore()
+const visible = ref(false)
 const form = reactive({
   source: '',
   target: '',
   type: 'oneToOne',
   sourceField: '',
   targetField: '',
-  comment: ''
-});
+  comment: '',
+})
 
 const sourceTableName = computed(() => {
-  const table = diagramStore.tables.find(t => t.id === form.source);
-  return table?.name || '';
-});
+  const table = diagramStore.tables.find((t) => t.id === form.source)
+  return table?.name || ''
+})
 
 const targetTableName = computed(() => {
-  const table = diagramStore.tables.find(t => t.id === form.target);
-  return table?.name || '';
-});
+  const table = diagramStore.tables.find((t) => t.id === form.target)
+  return table?.name || ''
+})
 
 const sourceFields = computed(() => {
-  const table = diagramStore.tables.find(t => t.id === form.source);
-  return table?.fields || [];
-});
+  const table = diagramStore.tables.find((t) => t.id === form.source)
+  return table?.fields || []
+})
 
 const targetFields = computed(() => {
-  const table = diagramStore.tables.find(t => t.id === form.target);
-  return table?.fields || [];
-});
+  const table = diagramStore.tables.find((t) => t.id === form.target)
+  return table?.fields || []
+})
 
 const open = (data: {
-  source: string;
-  target: string;
-  type?: string;
-  sourceField?: string;
-  targetField?: string;
-  comment?: string;
+  source: string
+  target: string
+  type?: string
+  sourceField?: string
+  targetField?: string
+  comment?: string
 }) => {
-  form.source = data.source;
-  form.target = data.target;
-  form.type = data.type || 'oneToOne';
-  form.sourceField = data.sourceField || '';
-  form.targetField = data.targetField || '';
-  form.comment = data.comment || '';
-  visible.value = true;
-};
+  form.source = data.source
+  form.target = data.target
+  form.type = data.type || 'oneToOne'
+  form.sourceField = data.sourceField || ''
+  form.targetField = data.targetField || ''
+  form.comment = data.comment || ''
+  visible.value = true
+}
 
 const handleSubmit = () => {
   emit('submit', {
@@ -114,12 +114,12 @@ const handleSubmit = () => {
     type: form.type,
     sourceField: form.sourceField,
     targetField: form.targetField,
-    comment: form.comment
-  });
-  visible.value = false;
-};
+    comment: form.comment,
+  })
+  visible.value = false
+}
 
 defineExpose({
-  open
-});
+  open,
+})
 </script>

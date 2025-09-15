@@ -12,24 +12,20 @@
               <el-option value="sqlite" label="SQLite" />
             </el-select>
           </el-form-item>
-          
+
           <el-form-item label="Options">
             <el-checkbox v-model="sqlForm.includeComments">Include Comments</el-checkbox>
-            <el-checkbox v-model="sqlForm.includeDropStatements">Include DROP Statements</el-checkbox>
+            <el-checkbox v-model="sqlForm.includeDropStatements"
+              >Include DROP Statements</el-checkbox
+            >
           </el-form-item>
-          
+
           <el-form-item label="SQL Preview">
-            <el-input
-              v-model="sqlPreview"
-              type="textarea"
-              :rows="10"
-              readonly
-              resize="none"
-            />
+            <el-input v-model="sqlPreview" type="textarea" :rows="10" readonly resize="none" />
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      
+
       <el-tab-pane label="Image" name="image">
         <el-form :model="imageForm" label-width="120px">
           <el-form-item label="Format">
@@ -40,17 +36,11 @@
               <el-option value="pdf" label="PDF" />
             </el-select>
           </el-form-item>
-          
+
           <el-form-item label="Quality">
-            <el-slider
-              v-model="imageForm.quality"
-              :min="10"
-              :max="100"
-              :step="5"
-              show-input
-            />
+            <el-slider v-model="imageForm.quality" :min="10" :max="100" :step="5" show-input />
           </el-form-item>
-          
+
           <el-form-item label="Preview">
             <div class="border border-gray-200 p-4 flex justify-center">
               <div class="bg-white p-2 shadow-md">
@@ -61,7 +51,7 @@
         </el-form>
       </el-tab-pane>
     </el-tabs>
-    
+
     <template #footer>
       <el-button @click="visible = false">Cancel</el-button>
       <el-button type="primary" @click="handleExport">Export</el-button>
@@ -70,53 +60,53 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue';
-import { useDiagramStore } from '@/stores/useDiagramStore';
+import { ref, reactive, computed } from 'vue'
+import { useDiagramStore } from '@/stores/useDiagramStore'
 
-const emit = defineEmits(['export']);
+const emit = defineEmits(['export'])
 
-const diagramStore = useDiagramStore();
-const visible = ref(false);
-const activeTab = ref('sql');
+const diagramStore = useDiagramStore()
+const visible = ref(false)
+const activeTab = ref('sql')
 
 const sqlForm = reactive({
   dbType: 'mysql',
   includeComments: true,
-  includeDropStatements: false
-});
+  includeDropStatements: false,
+})
 
 const imageForm = reactive({
   format: 'png',
-  quality: 90
-});
+  quality: 90,
+})
 
 const sqlPreview = computed(() => {
   // 这里应该生成实际的 SQL 预览
-  return '-- SQL preview will be generated here\n-- based on the current diagram';
-});
+  return '-- SQL preview will be generated here\n-- based on the current diagram'
+})
 
 const open = () => {
-  visible.value = true;
-};
+  visible.value = true
+}
 
 const handleExport = () => {
   if (activeTab.value === 'sql') {
     emit('export', {
       type: 'sql',
-      ...sqlForm
-    });
+      ...sqlForm,
+    })
   } else {
     emit('export', {
       type: 'image',
-      ...imageForm
-    });
+      ...imageForm,
+    })
   }
-  visible.value = false;
-};
+  visible.value = false
+}
 
 defineExpose({
-  open
-});
+  open,
+})
 </script>
 
 <style scoped>

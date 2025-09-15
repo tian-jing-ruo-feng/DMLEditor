@@ -13,11 +13,11 @@
         </div>
       </div>
     </header>
-    
+
     <main class="flex-1">
       <slot />
     </main>
-    
+
     <footer class="bg-gray-100 p-2 text-center text-sm text-gray-600">
       Database Modeler © 2025 - Powered by Vue 3 & AntV X6
     </footer>
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { User, Setting } from '@element-plus/icons-vue';
+import { User, Setting } from '@element-plus/icons-vue'
 </script>
 
 <style scoped>

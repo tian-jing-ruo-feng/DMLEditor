@@ -8,8 +8,6 @@ import type { EdgeProperty, TableField } from '@/types/modelEditor'
  * @param selectedCell 选中的单元格引用
  * @param tableProps 表格属性
  * @param edgeProps 边属性
- * @param canUndo 是否可撤销
- * @param canRedo 是否可重做
  */
 export const setupGraphEventHandlers = (
   graph: Graph,
@@ -21,11 +19,10 @@ export const setupGraphEventHandlers = (
     fields: TableField[]
   },
   edgeProps: EdgeProperty,
-  canUndo: Ref<boolean>,
-  canRedo: Ref<boolean>,
 ) => {
   // 监听选择变化
   graph.on('cell:click', ({ cell }) => {
+    selectedCell.value?.removeTools()
     selectedCell.value = cell
 
     if (cell.isNode()) {
@@ -34,6 +31,21 @@ export const setupGraphEventHandlers = (
       tableProps.name = data.name || '未命名表'
       tableProps.comment = data.comment || ''
       tableProps.fields = [...(data.fields || [])]
+      // 添加边界工具
+      // cell.addTools([
+      //   {
+      //     name: 'boundary',
+      //     args: {
+      //       padding: 5,
+      //       attrs: {
+      //         fill: '#7c68fc',
+      //         stroke: '#333',
+      //         'stroke-width': 1,
+      //         'fill-opacity': 0.2,
+      //       },
+      //     },
+      //   },
+      // ])
     } else if (cell.isEdge()) {
       const data = cell.getData() || {}
       edgeProps.id = cell.id as string
@@ -46,12 +58,12 @@ export const setupGraphEventHandlers = (
 
   // 点击空白区域取消选择
   graph.on('blank:click', () => {
+    selectedCell.value?.removeTools()
     selectedCell.value = null
   })
 
   // 监听历史状态变化
   graph.on('history:change', () => {
-    canUndo.value = true
-    canRedo.value = true
+    alert('历史状态变化')
   })
 }

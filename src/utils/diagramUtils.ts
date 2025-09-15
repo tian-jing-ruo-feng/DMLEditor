@@ -1,5 +1,7 @@
 import { Shape, Graph } from '@antv/x6'
 import type { TableField } from '@/types/modelEditor'
+import { Selection } from '@antv/x6-plugin-selection'
+import { History } from '@antv/x6-plugin-history'
 
 /**
  * 创建表节点
@@ -23,8 +25,8 @@ export const createTableNode = ({
     id,
     x,
     y,
-    width: 240,
-    height: 40 + fields.length * 32,
+    width: getTableNodeWidth(),
+    height: getTableNodeHeight(fields),
     shape: 'custom-vue-node',
     props: {
       table: {
@@ -253,5 +255,27 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
     },
   })
 
+  graph.use(
+    new Selection({
+      enabled: true,
+      multiple: true,
+      rubberband: true,
+      movable: true,
+      showNodeSelectionBox: true,
+    }),
+    new History({
+      enabled: true,
+    }),
+  )
+
   return graph
+}
+
+export function getTableNodeHeight(fields: TableField[]) {
+  const gap = 4
+  return 104 + fields.length * (32 + gap) - gap
+}
+
+export function getTableNodeWidth() {
+  return 240
 }

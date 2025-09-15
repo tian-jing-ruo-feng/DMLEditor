@@ -21,7 +21,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, inject, watchEffect } from 'vue'
+import { getTableNodeHeight, getTableNodeWidth } from '@/utils/diagramUtils'
+import { Cell, Node } from '@antv/x6'
+import { reactive, inject, watchEffect, computed } from 'vue'
 
 // 定义类型
 interface Field {
@@ -42,7 +44,7 @@ interface Table {
 
 // 注入依赖
 const getNode = inject('getNode') as () => any
-const node = getNode()
+const node = getNode() as Node
 
 node.on('change:data', (args: any) => {
   Object.assign(table, args.current)
@@ -75,6 +77,19 @@ const table = reactive<Table>({
   ],
   x: 0,
   y: 0,
+})
+
+// 动态设置节点大小
+watchEffect(() => {
+  const height = getTableNodeHeight(table.fields)
+  const width = getTableNodeWidth()
+  node.setAttrs({
+    size: {
+      width,
+      height,
+    },
+  })
+  node.resize(width, height)
 })
 
 watchEffect(() => {

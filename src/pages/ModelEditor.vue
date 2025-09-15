@@ -29,7 +29,7 @@
 
       <!-- 右侧属性面板 -->
       <editor-properties
-        :selected-cell="selectedCell"
+        :selected-cell="selectedCell!"
         :table-props="tableProps"
         :edge-props="edgeProps"
         :data-types="dataTypes"
@@ -43,12 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, nextTick } from 'vue'
-import { Graph, Shape, Node, Cell } from '@antv/x6'
+import { ref, reactive, onMounted, Ref, computed } from 'vue'
+import { Graph, Shape, Cell } from '@antv/x6'
 import EditorHeader from '../components/diagram/EditorHeader.vue'
 import EditorToolbox from '../components/diagram/EditorToolbox.vue'
 import EditorProperties from '../components/diagram/EditorProperties.vue'
-import { ElMessage, Table } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { createTableNode, createRelationEdge, initializeGraph } from '../utils/diagramUtils'
 import { setupGraphEventHandlers } from '../utils/eventHandler'
 import { register, getTeleport } from '@antv/x6-vue-shape'
@@ -74,9 +74,9 @@ const props = defineProps<{
 const graphContainer = ref<HTMLElement | null>(null)
 const graph = ref<Graph | null>(null)
 const projectName = ref('未命名项目')
-const selectedCell = ref<Cell | null>(null)
-const canUndo = ref(false)
-const canRedo = ref(false)
+const selectedCell = ref<Cell>()
+const canUndo = computed(() => graph.value?.canUndo())
+const canRedo = computed(() => graph.value?.canRedo())
 const currentEdgeType = ref('oneToMany')
 
 const tableProps = reactive({
@@ -102,7 +102,12 @@ onMounted(() => {
 
     // 设置图表事件监听
     if (graph.value) {
-      setupGraphEventHandlers(graph.value as Graph, selectedCell as Ref<Cell>, tableProps, edgeProps, canUndo, canRedo)
+      setupGraphEventHandlers(
+        graph.value as Graph,
+        selectedCell as Ref<Cell>,
+        tableProps,
+        edgeProps,
+      )
     }
 
     // 加载项目数据
@@ -384,8 +389,6 @@ const addTable = () => {
     })
 
     graph.value.addNode(tableNode)
-    graph.value?.cleanSelection()
-    graph.value?.select(tableNode)
   }
 }
 
@@ -413,8 +416,6 @@ const addNote = () => {
     })
 
     graph.value?.addNode(noteNode)
-    graph.value?.cleanSelection()
-    graph.value?.select(noteNode)
   }
 }
 

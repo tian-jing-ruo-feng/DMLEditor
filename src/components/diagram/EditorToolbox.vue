@@ -19,19 +19,28 @@
       <div class="mt-6">
         <h3 class="text-sm font-medium text-gray-500 mb-2">关系类型</h3>
         <div class="space-y-2">
-          <div class="card cursor-pointer hover:bg-gray-50" @click="$emit('set-edge-type', 'oneToOne')">
+          <div
+            class="card cursor-pointer hover:bg-gray-50"
+            @click="$emit('set-edge-type', 'oneToOne')"
+          >
             <div class="flex items-center">
               <span class="mr-2 text-xs font-bold">1:1</span>
               <span>一对一关系</span>
             </div>
           </div>
-          <div class="card cursor-pointer hover:bg-gray-50" @click="$emit('set-edge-type', 'oneToMany')">
+          <div
+            class="card cursor-pointer hover:bg-gray-50"
+            @click="$emit('set-edge-type', 'oneToMany')"
+          >
             <div class="flex items-center">
               <span class="mr-2 text-xs font-bold">1:N</span>
               <span>一对多关系</span>
             </div>
           </div>
-          <div class="card cursor-pointer hover:bg-gray-50" @click="$emit('set-edge-type', 'manyToMany')">
+          <div
+            class="card cursor-pointer hover:bg-gray-50"
+            @click="$emit('set-edge-type', 'manyToMany')"
+          >
             <div class="flex items-center">
               <span class="mr-2 text-xs font-bold">N:M</span>
               <span>多对多关系</span>
@@ -44,12 +53,12 @@
 </template>
 
 <script setup lang="ts">
-import { Grid, Document } from '@element-plus/icons-vue';
+import { Grid, Document } from '@element-plus/icons-vue'
 
 // 定义事件
 defineEmits<{
-  'add-table': [];
-  'add-note': [];
-  'set-edge-type': [type: string];
-}>();
+  'add-table': []
+  'add-note': []
+  'set-edge-type': [type: string]
+}>()
 </script>

@@ -12,14 +12,21 @@
             <el-input v-model="localTableProps.name" @change="updateTable" />
           </el-form-item>
           <el-form-item label="描述">
-            <el-input v-model="localTableProps.comment" type="textarea" rows="2" @change="updateTable" />
+            <el-input
+              v-model="localTableProps.comment"
+              type="textarea"
+              :rows="2"
+              @change="updateTable"
+            />
           </el-form-item>
-          
+
           <div class="flex justify-between items-center mt-6 mb-2">
             <h4 class="text-md font-medium text-gray-700">字段列表</h4>
-            <el-button type="primary" size="small" @click="addField" :icon="Plus">添加字段</el-button>
+            <el-button type="primary" size="small" @click="addField" :icon="Plus"
+              >添加字段</el-button
+            >
           </div>
-          
+
           <el-table :data="localTableProps.fields" style="width: 100%" size="small">
             <el-table-column label="名称" min-width="100">
               <template #default="{ row, $index }">
@@ -37,10 +44,28 @@
               <template #default="{ row, $index }">
                 <div class="flex justify-between">
                   <div>
-                    <el-checkbox v-model="row.primaryKey" @change="updateTable" size="small" label="PK" border />
+                    <el-checkbox
+                      v-model="row.primaryKey"
+                      @change="updateTable"
+                      size="small"
+                      label="PK"
+                      border
+                    />
                   </div>
-                  <el-checkbox v-model="row.notNull" @change="updateTable" size="small" label="NN" border />
-                  <el-button type="danger" size="small" :icon="Delete" @click="removeField($index)" border/>
+                  <el-checkbox
+                    v-model="row.notNull"
+                    @change="updateTable"
+                    size="small"
+                    label="NN"
+                    border
+                  />
+                  <el-button
+                    type="danger"
+                    size="small"
+                    :icon="Delete"
+                    @click="removeField($index)"
+                    border
+                  />
                 </div>
               </template>
             </el-table-column>
@@ -66,7 +91,12 @@
             <el-input v-model="localEdgeProps.targetField" @change="updateEdge" />
           </el-form-item>
           <el-form-item label="描述">
-            <el-input v-model="localEdgeProps.comment" type="textarea" rows="2" @change="updateEdge" />
+            <el-input
+              v-model="localEdgeProps.comment"
+              type="textarea"
+              rows="2"
+              @change="updateEdge"
+            />
           </el-form-item>
         </el-form>
       </div>
@@ -80,109 +110,117 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, reactive, watch } from 'vue';
-import { InfoFilled, Plus, Delete } from '@element-plus/icons-vue';
-import { Cell } from '@antv/x6';
+import { nextTick, reactive, watch } from 'vue'
+import { InfoFilled, Plus, Delete } from '@element-plus/icons-vue'
+import { Cell, Node } from '@antv/x6'
 
 // 定义属性
 interface TableField {
-  name: string;
-  type: string;
-  primaryKey: boolean;
-  notNull: boolean;
+  name: string
+  type: string
+  primaryKey: boolean
+  notNull: boolean
 }
 
 interface TableProps {
-  id: string;
-  name: string;
-  comment: string;
-  fields: TableField[];
+  id: string
+  name: string
+  comment: string
+  fields: TableField[]
 }
 
 interface EdgeProps {
-  id: string;
-  type: string;
-  sourceField: string;
-  targetField: string;
-  comment: string;
+  id: string
+  type: string
+  sourceField: string
+  targetField: string
+  comment: string
 }
 
 const props = defineProps<{
-  selectedCell: Cell | null;
-  tableProps: TableProps;
-  edgeProps: EdgeProps;
-  dataTypes: string[];
-}>();
+  selectedCell: Cell
+  tableProps: TableProps
+  edgeProps: EdgeProps
+  dataTypes: string[]
+}>()
 
 // 定义事件
 const emit = defineEmits<{
-  'update-edge-type': [];
-  'update-edge': [];
-}>();
-
+  'update-edge-type': []
+  'update-edge': []
+}>()
 
 // 本地响应式状态
 const localTableProps = reactive<TableProps>({
   id: '',
   name: '',
   comment: '',
-  fields: []
-});
+  fields: [],
+})
 
 const localEdgeProps = reactive<EdgeProps>({
   id: '',
   type: 'oneToMany',
   sourceField: '',
   targetField: '',
-  comment: ''
-});
+  comment: '',
+})
 
 // 监听表属性变化
-watch(() => props.tableProps, (newVal) => {
-  localTableProps.id = newVal.id;
-  localTableProps.name = newVal.name;
-  localTableProps.comment = newVal.comment;
-  localTableProps.fields = [...newVal.fields];
-}, { deep: true });
+watch(
+  () => props.tableProps,
+  (newVal) => {
+    localTableProps.id = newVal.id
+    localTableProps.name = newVal.name
+    localTableProps.comment = newVal.comment
+    localTableProps.fields = [...newVal.fields]
+  },
+  { deep: true },
+)
 
 // 监听边属性变化
-watch(() => props.edgeProps, (newVal) => {
-  localEdgeProps.id = newVal.id;
-  localEdgeProps.type = newVal.type;
-  localEdgeProps.sourceField = newVal.sourceField;
-  localEdgeProps.targetField = newVal.targetField;
-  localEdgeProps.comment = newVal.comment;
-}, { deep: true });
+watch(
+  () => props.edgeProps,
+  (newVal) => {
+    localEdgeProps.id = newVal.id
+    localEdgeProps.type = newVal.type
+    localEdgeProps.sourceField = newVal.sourceField
+    localEdgeProps.targetField = newVal.targetField
+    localEdgeProps.comment = newVal.comment
+  },
+  { deep: true },
+)
 
 // 方法定义
 // 更新节点数据
 
 const updateTable = () => {
-  props.selectedCell?.updateData({...localTableProps})
-};
+  props.selectedCell?.updateData({ ...localTableProps })
+  const size = (props.selectedCell as Node).getSize()
+}
 
 const addField = () => {
   localTableProps.fields.push({
-    name: '',
+    name: 'new_field',
     type: 'INT',
-    primaryKey: false,      
+    primaryKey: false,
     notNull: false,
-  });
-  updateTable();
-};
+  })
+  updateTable()
+}
 
 const removeField = (index: number) => {
-  localTableProps.fields.splice(index, 1);
+  localTableProps.fields.splice(index, 1)
   nextTick(() => {
-    updateTable();
+    updateTable()
   })
-};
+}
 
 const updateEdgeType = () => {
-  emit('update-edge-type');
-};
+  emit('update-edge-type')
+}
 
 const updateEdge = () => {
-  emit('update-edge');
-};
+  emit('update-edge')
+}
 </script>

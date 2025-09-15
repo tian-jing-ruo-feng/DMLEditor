@@ -7,7 +7,13 @@
             <el-icon><back /></el-icon>
           </router-link>
           <h1 class="text-xl font-semibold text-gray-800">{{ projectName }}</h1>
-          <el-input v-model="localProjectName" size="small" class="w-64" placeholder="项目名称" @change="updateProjectName" />
+          <el-input
+            v-model="localProjectName"
+            size="small"
+            class="w-64"
+            placeholder="项目名称"
+            @change="updateProjectName"
+          />
         </div>
         <div class="flex items-center space-x-2">
           <el-button-group>
@@ -16,8 +22,18 @@
             <el-button :icon="ZoomOut" @click="$emit('zoom-out')" title="缩小"></el-button>
           </el-button-group>
           <el-button-group>
-            <el-button :icon="Back" @click="$emit('undo')" :disabled="!canUndo" title="撤销"></el-button>
-            <el-button :icon="Right" @click="$emit('redo')" :disabled="!canRedo" title="重做"></el-button>
+            <el-button
+              :icon="Back"
+              @click="$emit('undo')"
+              :disabled="!canUndo"
+              title="撤销"
+            ></el-button>
+            <el-button
+              :icon="Right"
+              @click="$emit('redo')"
+              :disabled="!canRedo"
+              title="重做"
+            ></el-button>
           </el-button-group>
           <el-dropdown trigger="click">
             <el-button>
@@ -39,43 +55,49 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { Back, Right, ZoomIn, ZoomOut, Refresh, ArrowDown } from '@element-plus/icons-vue';
+import { ref, watch } from 'vue'
+import { Back, Right, ZoomIn, ZoomOut, Refresh, ArrowDown } from '@element-plus/icons-vue'
 
 // 定义属性并设置默认值
-const props = withDefaults(defineProps<{
-  projectName: string;
-  canUndo?: boolean;
-  canRedo?: boolean;
-}>(), {
-  canUndo: false,
-  canRedo: false
-});
+const props = withDefaults(
+  defineProps<{
+    projectName: string
+    canUndo?: boolean
+    canRedo?: boolean
+  }>(),
+  {
+    canUndo: false,
+    canRedo: false,
+  },
+)
 
 // 定义事件
 const emit = defineEmits<{
-  'update:project-name': [value: string];
-  'reset-view': [];
-  'zoom-in': [];
-  'zoom-out': [];
-  'undo': [];
-  'redo': [];
-  'export-sql': [];
-  'export-image': [];
-  'export-json': [];
-  'save': [];
-}>();
+  'update:project-name': [value: string]
+  'reset-view': []
+  'zoom-in': []
+  'zoom-out': []
+  undo: []
+  redo: []
+  'export-sql': []
+  'export-image': []
+  'export-json': []
+  save: []
+}>()
 
 // 响应式数据
-const localProjectName = ref(props.projectName);
+const localProjectName = ref(props.projectName)
 
 // 监听属性变化
-watch(() => props.projectName, (newVal) => {
-  localProjectName.value = newVal;
-});
+watch(
+  () => props.projectName,
+  (newVal) => {
+    localProjectName.value = newVal
+  },
+)
 
 // 方法定义
 const updateProjectName = () => {
-  emit('update:project-name', localProjectName.value);
-};
+  emit('update:project-name', localProjectName.value)
+}
 </script>

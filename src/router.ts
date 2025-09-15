@@ -1,7 +1,7 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import ProjectList from './pages/ProjectList.vue';
-import ModelEditor from './pages/ModelEditor.vue';
-import App from './App.vue';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import ProjectList from './pages/ProjectList.vue'
+import ModelEditor from './pages/ModelEditor.vue'
+import App from './App.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,7 +15,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'ProjectList',
         component: ProjectList,
       },
-    ]
+    ],
   },
   {
     path: '/editor/:id',
@@ -23,11 +23,11 @@ const routes: Array<RouteRecordRaw> = [
     component: ModelEditor,
     props: true,
   },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
 
-export default router;
+export default router
