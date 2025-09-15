@@ -138,7 +138,7 @@ interface EdgeProps {
 }
 
 const props = defineProps<{
-  selectedCell: Cell
+  selectedCell: Cell | undefined
   tableProps: TableProps
   edgeProps: EdgeProps
   dataTypes: string[]
