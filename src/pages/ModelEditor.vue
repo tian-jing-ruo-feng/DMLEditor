@@ -395,13 +395,8 @@ const addTable = () => {
 // 添加注释
 const addNote = () => {
   if (graph.value) {
-    const id = `note-${Date.now()}`
-    const pos = graph.value.clientToLocal(300, 200)
-
-    const noteNode = new Shape.HTML({
-      id,
-      x: pos.x,
-      y: pos.y,
+    Shape.HTML.register({
+      shape: 'custom-html',
       width: 200,
       height: 100,
       html: `
@@ -414,8 +409,12 @@ const addNote = () => {
         content: '点击编辑注释',
       },
     })
-
-    graph.value?.addNode(noteNode)
+    const pos = graph.value.clientToLocal(300, 200)
+    graph.value?.addNode({
+      shape: 'custom-html',
+      x: pos.x,
+      y: pos.y,
+    })
   }
 }
 
@@ -543,5 +542,7 @@ const exportJSON = () => {
 // 保存项目
 const saveProject = () => {
   ElMessage.success('项目已保存')
+  // const dataJson = graph.value?.toJSON()
+  // localStorage.setItem('graph-data', JSON.stringify(dataJson))
 }
 </script>
