@@ -33,11 +33,6 @@
         :table-props="tableProps"
         :edge-props="edgeProps"
         :data-types="dataTypes"
-        @update-table="updateTable"
-        @update-table-name="updateTableName"
-        @update-table-comment="updateTableComment"
-        @add-field="addField"
-        @remove-field="removeField"
         @update-edge-type="updateEdgeType"
         @update-edge="updateEdge"
       />
@@ -107,7 +102,7 @@ onMounted(() => {
 
     // 设置图表事件监听
     if (graph.value) {
-      setupGraphEventHandlers(graph.value, selectedCell, tableProps, edgeProps, canUndo, canRedo)
+      setupGraphEventHandlers(graph.value as Graph, selectedCell as Ref<Cell>, tableProps, edgeProps, canUndo, canRedo)
     }
 
     // 加载项目数据
@@ -429,65 +424,6 @@ const setEdgeType = (type: string) => {
   ElMessage.success(
     `已设置关系类型为: ${type === 'oneToOne' ? '一对一' : type === 'oneToMany' ? '一对多' : '多对多'}`,
   )
-}
-
-// 更新表
-const updateTable = (data: TableField) => {
-  if (graph.value && selectedCell.value && selectedCell.value.isNode()) {
-    console.log(data, '<<<<< params data')
-    selectedCell.value.setData(
-      {
-        // name: tableProps.name,
-        // comment: tableProps.comment,
-        // fields: tableProps.fields,
-        ...data,
-      },
-      {
-        deep: true,
-        silent: false,
-      },
-    )
-
-    // 更新表格视图
-    const fields = tableProps.fields
-    selectedCell.value.setProp('table', {
-      ...selectedCell.value.getProp('table'),
-      // name: tableProps.name,
-      // comment: tableProps.comment,
-      // fields: tableProps.fields,
-      ...data,
-    })
-
-    selectedCell.value.resize(240, 40 + fields.length * 32)
-  }
-}
-
-// 更新表名
-const updateTableName = (data: TableField) => {
-  console.log(data, '<<<<< upat data')
-  updateTable(data)
-}
-
-// 更新表注释
-const updateTableComment = (data: TableField) => {
-  updateTable(data)
-}
-
-// 添加字段
-const addField = () => {
-  tableProps.fields.push({
-    name: '新字段',
-    type: 'VARCHAR',
-    primaryKey: false,
-    notNull: false,
-  })
-  updateTable(tableProps as unknown as TableField)
-}
-
-// 删除字段
-const removeField = (index: number) => {
-  tableProps.fields.splice(index, 1)
-  updateTable(tableProps as unknown as TableField)
 }
 
 // 更新边类型

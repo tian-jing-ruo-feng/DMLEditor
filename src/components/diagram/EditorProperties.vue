@@ -1,5 +1,5 @@
 <template>
-  <div class="w-80 bg-white border-l border-gray-200 flex flex-col">
+  <div class="w-120 bg-white border-l border-gray-200 flex flex-col">
     <div class="p-4 border-b border-gray-200">
       <h2 class="text-lg font-medium text-gray-700">属性</h2>
     </div>
@@ -9,15 +9,15 @@
         <h3 class="text-md font-medium text-gray-700 mb-4">表属性</h3>
         <el-form label-position="top">
           <el-form-item label="表名">
-            <el-input v-model="localTableProps.name" @change="updateTableName" />
+            <el-input v-model="localTableProps.name" @change="updateTable" />
           </el-form-item>
           <el-form-item label="描述">
-            <el-input v-model="localTableProps.comment" type="textarea" rows="2" @change="updateTableComment" />
+            <el-input v-model="localTableProps.comment" type="textarea" rows="2" @change="updateTable" />
           </el-form-item>
           
           <div class="flex justify-between items-center mt-6 mb-2">
             <h4 class="text-md font-medium text-gray-700">字段列表</h4>
-            <el-button type="primary" size="small" @click="$emit('add-field')">添加字段</el-button>
+            <el-button type="primary" size="small" @click="addField" :icon="Plus">添加字段</el-button>
           </div>
           
           <el-table :data="localTableProps.fields" style="width: 100%" size="small">
@@ -33,12 +33,14 @@
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="120">
+            <el-table-column label="操作" width="200">
               <template #default="{ row, $index }">
-                <div class="flex space-x-1">
-                  <el-checkbox v-model="row.primaryKey" @change="updateTable" size="small" label="PK" border />
+                <div class="flex justify-between">
+                  <div>
+                    <el-checkbox v-model="row.primaryKey" @change="updateTable" size="small" label="PK" border />
+                  </div>
                   <el-checkbox v-model="row.notNull" @change="updateTable" size="small" label="NN" border />
-                  <el-button type="danger" size="small" icon="Delete" circle @click="$emit('remove-field', $index)" />
+                  <el-button type="danger" size="small" :icon="Delete" @click="removeField($index)" border/>
                 </div>
               </template>
             </el-table-column>
@@ -78,8 +80,8 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue';
-import { InfoFilled } from '@element-plus/icons-vue';
+import { nextTick, reactive, watch } from 'vue';
+import { InfoFilled, Plus, Delete } from '@element-plus/icons-vue';
 import { Cell } from '@antv/x6';
 
 // 定义属性
@@ -114,14 +116,10 @@ const props = defineProps<{
 
 // 定义事件
 const emit = defineEmits<{
-  'update-table': [];
-  'update-table-name': [];
-  'update-table-comment': [];
-  'add-field': [];
-  'remove-field': [index: number];
   'update-edge-type': [];
   'update-edge': [];
 }>();
+
 
 // 本地响应式状态
 const localTableProps = reactive<TableProps>({
@@ -157,16 +155,27 @@ watch(() => props.edgeProps, (newVal) => {
 }, { deep: true });
 
 // 方法定义
+// 更新节点数据
+
 const updateTable = () => {
-  emit('update-table');
+  props.selectedCell?.updateData({...localTableProps})
 };
 
-const updateTableName = () => {
-  emit('update-table-name');
+const addField = () => {
+  localTableProps.fields.push({
+    name: '',
+    type: 'INT',
+    primaryKey: false,      
+    notNull: false,
+  });
+  updateTable();
 };
 
-const updateTableComment = () => {
-  emit('update-table-comment');
+const removeField = (index: number) => {
+  localTableProps.fields.splice(index, 1);
+  nextTick(() => {
+    updateTable();
+  })
 };
 
 const updateEdgeType = () => {
