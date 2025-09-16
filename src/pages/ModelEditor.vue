@@ -56,6 +56,10 @@ import TableNode from '@/components/TableNode.vue'
 import type { EdgeProperty, TableField } from '@/types/modelEditor'
 import { dataTypes } from '@/constants'
 import { generateSQL } from '@/utils/sqlGenerator'
+import { useProjectsStore } from '@/stores/userProjectsStore'
+
+const projectStore = useProjectsStore()
+const { getProjectById } = projectStore
 
 // 注册自定义节点
 register({
@@ -125,7 +129,12 @@ const loadProject = (id: string) => {
     projectName.value = '博客系统数据库'
     loadBlogExample()
   } else {
-    projectName.value = '新建项目'
+    const curProject = getProjectById(id)
+    projectName.value = curProject?.name || '未命名项目'
+
+    const projectGraph = JSON.parse(localStorage.getItem('graph-data')!)
+    console.log(projectGraph, 'projectGraph')
+    graph.value?.fromJSON(projectGraph.graphData)
   }
 }
 
@@ -549,7 +558,11 @@ const exportJSON = () => {
 // 保存项目
 const saveProject = () => {
   ElMessage.success('项目已保存')
-  // const dataJson = graph.value?.toJSON()
-  // localStorage.setItem('graph-data', JSON.stringify(dataJson))
+  const dataJson = graph.value?.toJSON()
+  const curProjectGraphData = {
+    id: props.id,
+    graphData: dataJson,
+  }
+  localStorage.setItem('graph-data', JSON.stringify(curProjectGraphData))
 }
 </script>
