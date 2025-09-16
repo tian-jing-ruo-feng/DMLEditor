@@ -55,6 +55,7 @@ import { register, getTeleport } from '@antv/x6-vue-shape'
 import TableNode from '@/components/TableNode.vue'
 import type { EdgeProperty, TableField } from '@/types/modelEditor'
 import { dataTypes } from '@/constants'
+import { generateSQL } from '@/utils/sqlGenerator'
 
 // 注册自定义节点
 register({
@@ -527,6 +528,12 @@ const redo = () => {
 // 导出SQL
 const exportSQL = () => {
   ElMessage.info('导出SQL功能开发中...')
+  const sql = generateSQL({
+    dbType: 'mysql',
+    includeComments: true,
+    includeDropStatements: false,
+  })
+  console.log(sql, '<<<< export sql')
 }
 
 // 导出图片

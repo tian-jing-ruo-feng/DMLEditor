@@ -33,9 +33,9 @@
             </el-dropdown>
           </div>
           <p class="text-gray-500 mb-4">{{ project.description }}</p>
-          <div class="flex justify-between items-center text-sm text-gray-400">
-            <span>创建于: {{ formatDate(project.createdAt) }}</span>
-            <span>修改于: {{ formatDate(project.updatedAt) }}</span>
+          <div class="flex justify-between items-center text-xs text-gray-400">
+            <span>创建于: {{ project.createdAt }}</span>
+            <span v-if="project.updatedAt">修改于: {{ project.updatedAt }}</span>
           </div>
           <div class="mt-4">
             <el-button type="primary" plain @click="openProject(project.id)">打开项目</el-button>
@@ -81,56 +81,38 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, ref, reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { Plus, More } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { v4 as uuidv4 } from 'uuid'
+import { dayjs, ElMessage } from 'element-plus'
+import { useProjectsStore, type Project } from '@/stores/userProjectsStore'
+import { storeToRefs } from 'pinia'
 import MainLayout from '@/layouts/MainLayout.vue'
 
-interface Project {
-  id: string
-  name: string
-  description: string
-  createdAt: Date
-  updatedAt: Date
-}
-
 const router = useRouter()
-const projects = ref<Project[]>([
-  {
-    id: '1',
-    name: '电商系统数据库',
-    description: '包含用户、商品、订单、支付等模块的数据库设计',
-    createdAt: new Date('2025-08-15'),
-    updatedAt: new Date('2025-09-01'),
-  },
-  {
-    id: '2',
-    name: '博客系统数据库',
-    description: '包含用户、文章、评论、标签等模块的数据库设计',
-    createdAt: new Date('2025-07-20'),
-    updatedAt: new Date('2025-08-25'),
-  },
-])
+const projectsStore = useProjectsStore()
+const { projects } = storeToRefs(projectsStore)
+const { addProject, removeProject, getProjectById } = projectsStore
 
 const dialogVisible = ref(false)
-const newProject = reactive({
+const newProject = reactive<Project>({
+  id: '',
   name: '',
   description: '',
+  createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+  updatedAt: '',
 })
-
-const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(date)
-}
 
 const createNewProject = () => {
   dialogVisible.value = true
-  newProject.name = ''
-  newProject.description = ''
+  Object.assign(newProject, {
+    id: uuidv4(),
+    name: '',
+    description: '',
+    createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    updatedAt: '',
+  })
 }
 
 const saveNewProject = () => {
@@ -138,22 +120,12 @@ const saveNewProject = () => {
     ElMessage.warning('项目名称不能为空')
     return
   }
-
-  const id = Date.now().toString()
-  const project: Project = {
-    id,
-    name: newProject.name,
-    description: newProject.description,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  }
-
-  projects.value.push(project)
+  addProject(newProject)
   dialogVisible.value = false
   ElMessage.success('项目创建成功')
 
   // 创建后直接打开项目
-  router.push(`/editor/${id}`)
+  router.push(`/editor/${newProject.id}`)
 }
 
 const openProject = (id: string) => {
@@ -161,17 +133,17 @@ const openProject = (id: string) => {
 }
 
 const duplicateProject = (id: string) => {
-  const project = projects.value.find((p) => p.id === id)
+  const project = getProjectById(id)
   if (project) {
     const newId = Date.now().toString()
     const duplicated: Project = {
       ...project,
-      id: newId,
+      id: uuidv4(),
       name: `${project.name} (副本)`,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      updatedAt: '',
     }
-    projects.value.push(duplicated)
+    addProject(duplicated)
     ElMessage.success('项目复制成功')
   }
 }
@@ -181,7 +153,7 @@ const exportProject = (id: string) => {
 }
 
 const deleteProject = (id: string) => {
-  projects.value = projects.value.filter((p) => p.id !== id)
+  removeProject(id)
   ElMessage.success('项目删除成功')
 }
 </script>
