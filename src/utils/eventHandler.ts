@@ -1,6 +1,7 @@
 import { Graph, Cell } from '@antv/x6'
 import { Ref } from 'vue'
 import type { EdgeProperty, TableField } from '@/types/modelEditor'
+import emitter from '@/eventBus'
 
 /**
  * 设置图表事件监听
@@ -22,6 +23,8 @@ export const setupGraphEventHandlers = (
 ) => {
   // 监听选择变化
   graph.on('cell:click', ({ cell }) => {
+    emitter.emit('node:click')
+
     selectedCell.value?.removeTools()
     selectedCell.value = cell
 
@@ -58,6 +61,7 @@ export const setupGraphEventHandlers = (
 
   // 点击空白区域取消选择
   graph.on('blank:click', () => {
+    emitter.emit('blank:click')
     selectedCell.value?.removeTools()
     selectedCell.value = null
   })

@@ -24,11 +24,11 @@
         <editor-toolbox @add-table="addTable" @add-note="addNote" @set-edge-type="setEdgeType" />
       </el-splitter-panel>
       <!-- 中间画布区域 -->
-      <el-splitter-panel>
+      <el-splitter-panel collapsible resizable>
         <div ref="graphContainer"></div>
       </el-splitter-panel>
       <!-- 右侧属性面板 -->
-      <el-splitter-panel size="430" collapsible>
+      <el-splitter-panel :size="propertyPanelSize" collapsible>
         <editor-properties
           :selected-cell="selectedCell!"
           :table-props="tableProps"
@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, Ref, computed } from 'vue'
+import { ref, reactive, onMounted, Ref, computed, getCurrentInstance } from 'vue'
 import { Graph, Shape, Cell } from '@antv/x6'
 import EditorHeader from '../components/diagram/EditorHeader.vue'
 import EditorToolbox from '../components/diagram/EditorToolbox.vue'
@@ -59,6 +59,7 @@ import type { EdgeProperty, TableField } from '@/types/modelEditor'
 import { dataTypes } from '@/constants'
 import { generateSQL } from '@/utils/sqlGenerator'
 import { useProjectsStore } from '@/stores/userProjectsStore'
+import emitter from '@/eventBus'
 
 const projectStore = useProjectsStore()
 const { getProjectById } = projectStore
@@ -76,6 +77,16 @@ const TableNodeContainer = getTeleport()
 const props = defineProps<{
   id: string
 }>()
+
+/** 右侧属性面板大小 */
+const propertyPanelSize = ref(0)
+/** 事件监听 */
+emitter.on('node:click', () => {
+  propertyPanelSize.value = 467
+})
+emitter.on('blank:click', () => {
+  propertyPanelSize.value = 0
+})
 
 // 初始化
 const graphContainer = ref<HTMLElement | null>(null)
