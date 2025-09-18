@@ -1,7 +1,7 @@
 <template>
   <div class="w-120 bg-white border-l border-gray-200 flex flex-col">
     <div class="p-4 border-b border-gray-200">
-      <h2 class="text-lg font-medium text-gray-700">属性</h2>
+      <h2 class="text-md font-bold text-gray-700">属性</h2>
     </div>
     <div class="p-4 overflow-y-auto flex-1">
       <!-- 表属性编辑 -->

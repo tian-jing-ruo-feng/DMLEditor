@@ -1,7 +1,7 @@
 <template>
   <div class="w-64 bg-white border-r border-gray-200 flex flex-col">
     <div class="p-4 border-b border-gray-200">
-      <h2 class="text-lg font-medium text-gray-700">工具箱</h2>
+      <h2 class="font-bold text-gray-700">工具箱</h2>
     </div>
     <div class="p-4 space-y-4 overflow-y-auto">
       <div class="card cursor-pointer hover:bg-gray-50" @click="$emit('add-table')">

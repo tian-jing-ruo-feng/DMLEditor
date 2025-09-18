@@ -18,25 +18,27 @@
     />
 
     <!-- 主要内容区域 -->
-    <div class="flex-1 flex overflow-hidden">
+    <el-splitter class="flex-1 flex overflow-hidden" lazy>
       <!-- 左侧工具面板 -->
-      <editor-toolbox @add-table="addTable" @add-note="addNote" @set-edge-type="setEdgeType" />
-
+      <el-splitter-panel size="256" collapsible>
+        <editor-toolbox @add-table="addTable" @add-note="addNote" @set-edge-type="setEdgeType" />
+      </el-splitter-panel>
       <!-- 中间画布区域 -->
-      <div class="flex-1 relative">
-        <div ref="graphContainer" class="absolute inset-0 bg-gray-100"></div>
-      </div>
-
+      <el-splitter-panel>
+        <div ref="graphContainer"></div>
+      </el-splitter-panel>
       <!-- 右侧属性面板 -->
-      <editor-properties
-        :selected-cell="selectedCell!"
-        :table-props="tableProps"
-        :edge-props="edgeProps"
-        :data-types="dataTypes"
-        @update-edge-type="updateEdgeType"
-        @update-edge="updateEdge"
-      />
-    </div>
+      <el-splitter-panel size="430" collapsible>
+        <editor-properties
+          :selected-cell="selectedCell!"
+          :table-props="tableProps"
+          :edge-props="edgeProps"
+          :data-types="dataTypes"
+          @update-edge-type="updateEdgeType"
+          @update-edge="updateEdge"
+        />
+      </el-splitter-panel>
+    </el-splitter>
 
     <TableNodeContainer />
   </div>
