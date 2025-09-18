@@ -25,8 +25,9 @@ export const createTableNode = ({
     id,
     x,
     y,
-    width: getTableNodeWidth(),
-    height: getTableNodeHeight(fields),
+    // width/height 可选属性
+    // width: getTableNodeWidth(),
+    // height: getTableNodeHeight(fields),
     shape: 'custom-vue-node',
     props: {
       table: {
@@ -270,11 +271,6 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
 
   return graph
 }
-
-// export function getTableNodeHeight(fields: TableField[]) {
-//   const gap = 2
-//   return 52 + fields.length * (26.67 + gap) - gap
-// }
 
 export function getTableNodeWidth() {
   return 240
