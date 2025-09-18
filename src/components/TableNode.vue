@@ -1,5 +1,5 @@
 <template>
-  <el-card class="table-node" shadow="always">
+  <el-card class="table-node text-sm" shadow="always">
     <template #header>
       <div class="table-header">
         <span class="table-name">{{ table.name }}</span>
@@ -7,7 +7,7 @@
       </div>
     </template>
 
-    <div class="table-fields">
+    <div class="table-fields" ref="tableFields">
       <div v-for="field in table.fields" :key="field.name" class="table-field">
         <div class="field-name">
           <el-tag v-if="field.primaryKey" size="small" type="warning">PK</el-tag>
@@ -21,9 +21,9 @@
 </template>
 
 <script setup lang="ts">
-import { getTableNodeHeight, getTableNodeWidth } from '@/utils/diagramUtils'
+import { getTableNodeWidth } from '@/utils/diagramUtils'
 import { Cell, Node } from '@antv/x6'
-import { reactive, inject, watchEffect, computed } from 'vue'
+import { reactive, inject, watchEffect, computed, useTemplateRef, nextTick, watch } from 'vue'
 
 // 定义类型
 interface Field {
@@ -45,6 +45,7 @@ interface Table {
 // 注入依赖
 const getNode = inject('getNode') as () => any
 const node = getNode() as Node
+const tableFieldsRef = useTemplateRef('tableFields')
 
 node.on('change:data', (args: any) => {
   Object.assign(table, args.current)
@@ -80,17 +81,26 @@ const table = reactive<Table>({
 })
 
 // 动态设置节点大小
-watchEffect(() => {
-  const height = getTableNodeHeight(table.fields)
-  const width = getTableNodeWidth()
-  node.setAttrs({
-    size: {
-      width,
-      height,
-    },
-  })
-  node.resize(width, height)
-})
+watch(
+  () => table.fields,
+  async () => {
+    await nextTick()
+    const height = tableFieldsRef.value?.clientHeight || 0
+    const tableFieldHeight = 36.67
+    const cardBodyPaddingY = 32
+    const width = getTableNodeWidth()
+    node.setAttrs({
+      size: {
+        width,
+        height,
+      },
+    })
+    node.resize(width, height + tableFieldHeight + cardBodyPaddingY)
+  },
+  {
+    deep: true,
+  },
+)
 
 watchEffect(() => {
   const node = getNode()
@@ -98,11 +108,18 @@ watchEffect(() => {
 })
 </script>
 
-<style>
+<style lang="scss" scoped>
 .table-node {
   width: 240px;
   border-radius: 4px;
   border: 1px solid #dcdfe6;
+
+  :deep(.el-card__header) {
+    padding: 8px;
+  }
+  :deep(.el-card__body) {
+    padding: 16px;
+  }
 }
 
 .table-header {
@@ -123,10 +140,10 @@ watchEffect(() => {
 
 .table-field {
   display: flex;
+  gap: 4px;
   justify-content: space-between;
-  align-items: center;
-  padding: 4px 0;
-  border-bottom: 1px dashed #eee;
+  // align-items: center;
+  border-bottom: 1px dashed var(--el-border-color);
 }
 
 .field-name {

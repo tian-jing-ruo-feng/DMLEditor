@@ -271,10 +271,10 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
   return graph
 }
 
-export function getTableNodeHeight(fields: TableField[]) {
-  const gap = 4
-  return 104 + fields.length * (32 + gap) - gap
-}
+// export function getTableNodeHeight(fields: TableField[]) {
+//   const gap = 2
+//   return 52 + fields.length * (26.67 + gap) - gap
+// }
 
 export function getTableNodeWidth() {
   return 240
