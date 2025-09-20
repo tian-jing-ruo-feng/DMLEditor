@@ -21,6 +21,8 @@ export const setupGraphEventHandlers = (
   },
   edgeProps: EdgeProperty,
 ) => {
+  console.log(graph.isSnaplineEnabled(), '对齐线是否启用')
+
   // 监听选择变化
   graph.on('cell:click', ({ cell }) => {
     emitter.emit('node:click')
@@ -80,6 +82,6 @@ export const setupGraphEventHandlers = (
 
   // 监听历史状态变化
   graph.on('history:change', () => {
-    alert('历史状态变化')
+    // alert('历史状态变化')
   })
 }

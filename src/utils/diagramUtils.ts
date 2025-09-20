@@ -2,6 +2,10 @@ import { Shape, Graph } from '@antv/x6'
 import type { TableField } from '@/types/modelEditor'
 import { Selection } from '@antv/x6-plugin-selection'
 import { History } from '@antv/x6-plugin-history'
+import { Snapline } from '@antv/x6-plugin-snapline'
+import { Clipboard } from '@antv/x6-plugin-clipboard'
+import { Keyboard } from '@antv/x6-plugin-keyboard'
+import { useKeyBoard } from './keyboard'
 
 /**
  * 创建表节点
@@ -177,8 +181,18 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
     container,
     grid: {
       visible: true,
-      type: 'dot',
-      size: 10,
+      type: 'doubleMesh',
+      args: [
+        {
+          color: '#eee', // 主网格线颜色
+          thickness: 1, // 主网格线宽度
+        },
+        {
+          color: '#ddd', // 次网格线颜色
+          thickness: 1, // 次网格线宽度
+          factor: 4, // 主次网格线间隔
+        },
+      ],
     },
     panning: {
       enabled: true,
@@ -259,18 +273,38 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
     },
   })
 
-  graph.use(
-    new Selection({
-      enabled: true,
-      multiple: true,
-      rubberband: true,
-      movable: true,
-      showNodeSelectionBox: true,
-    }),
-    new History({
-      enabled: true,
-    }),
-  )
+  graph
+    .use(
+      new Selection({
+        enabled: true,
+        multiple: true,
+        rubberband: true,
+        movable: true,
+        showNodeSelectionBox: true,
+      }),
+    )
+    .use(
+      new Snapline({
+        enabled: true,
+      }),
+    )
+    .use(
+      new History({
+        enabled: true,
+      }),
+    )
+    .use(
+      new Clipboard({
+        enabled: true,
+      }),
+    )
+    .use(
+      new Keyboard({
+        enabled: true,
+      }),
+    )
+
+  useKeyBoard(graph)
 
   return graph
 }
