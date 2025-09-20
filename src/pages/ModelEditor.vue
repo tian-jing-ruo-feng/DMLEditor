@@ -20,9 +20,9 @@
     <!-- 主要内容区域 -->
     <el-splitter class="flex-1 flex overflow-hidden" lazy>
       <!-- 左侧工具面板 -->
-      <el-splitter-panel size="256" collapsible>
+      <!-- <el-splitter-panel size="256" collapsible>
         <editor-toolbox @add-table="addTable" @add-note="addNote" @set-edge-type="setEdgeType" />
-      </el-splitter-panel>
+      </el-splitter-panel> -->
       <!-- 中间画布区域 -->
       <el-splitter-panel collapsible resizable>
         <div ref="graphContainer"></div>

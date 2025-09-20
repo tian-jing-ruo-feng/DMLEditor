@@ -180,6 +180,9 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
       type: 'dot',
       size: 10,
     },
+    panning: {
+      enabled: true,
+    },
     autoResize: true,
     connecting: {
       router: 'manhattan',

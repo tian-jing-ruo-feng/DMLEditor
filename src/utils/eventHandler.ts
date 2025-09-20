@@ -59,6 +59,18 @@ export const setupGraphEventHandlers = (
     }
   })
 
+  graph.on('cell:mouseenter', ({ cell }) => {
+    cell.addTools({
+      name: 'button-remove',
+    })
+  })
+
+  graph.on('cell:mouseleave', ({ cell }) => {
+    if (cell.hasTool('button-remove')) {
+      cell.removeTool('button-remove')
+    }
+  })
+
   // 点击空白区域取消选择
   graph.on('blank:click', () => {
     emitter.emit('blank:click')
