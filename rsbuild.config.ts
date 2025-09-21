@@ -1,5 +1,6 @@
 import { defineConfig } from '@rsbuild/core'
 import { pluginVue } from '@rsbuild/plugin-vue'
+import path from 'path'
 
 export default defineConfig({
   plugins: [pluginVue()],
@@ -29,6 +30,15 @@ export default defineConfig({
     assetPrefix: '/',
   },
   output: {
-    assetPrefix: process.env.NODE_ENV === 'production' ? './' : '/',
+    assetPrefix: '/',
+    distPath: {
+      root: 'dist',
+      js: 'static/js',
+      css: 'static/css',
+      html: '',
+      image: 'static/images',
+      media: 'static/media',
+      font: 'static/fonts',
+    },
   },
 })
