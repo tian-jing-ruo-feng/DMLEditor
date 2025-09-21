@@ -14,6 +14,7 @@ export default defineConfig({
   html: {
     template: './index.html',
     title: 'Database Modeler',
+    scriptLoading: 'blocking',
   },
   dev: {
     assetPrefix: '/',
