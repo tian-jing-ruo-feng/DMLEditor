@@ -1,21 +1,12 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import ProjectList from './pages/ProjectList.vue'
 import ModelEditor from './pages/ModelEditor.vue'
-import App from './App.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
     component: ProjectList,
-    // redirect: '/project-list',
-    // children: [
-    //   {
-    //     path: '/project-list',
-    //     name: 'ProjectList',
-    //     component: ProjectList,
-    //   },
-    // ],
   },
   {
     path: '/editor/:id',
@@ -26,7 +17,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
 })
 
