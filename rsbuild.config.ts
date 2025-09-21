@@ -23,6 +23,7 @@ export default defineConfig({
   html: {
     template: './index.html',
     title: 'Database Modeler',
+    // inject: 'body',
   },
   dev: {
     assetPrefix: '/',
