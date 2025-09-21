@@ -1,14 +1,15 @@
-import { defineConfig } from '@rsbuild/core';
-import { pluginVue } from '@rsbuild/plugin-vue';
-import { pluginBabel } from '@rsbuild/plugin-babel';
+import { defineConfig } from '@rsbuild/core'
+import { pluginVue } from '@rsbuild/plugin-vue'
+import { pluginBabel } from '@rsbuild/plugin-babel'
 // import { pluginTypeScript } from '@rsbuild/plugin-typescript';
 
 export default defineConfig({
   plugins: [
+    ,
     // pluginBabel({
     //   include: /\.(?:jsx|tsx)$/,
     // }),
-    ,pluginVue(), 
+    pluginVue(),
   ],
   source: {
     entry: {
@@ -27,6 +28,6 @@ export default defineConfig({
     assetPrefix: '/',
   },
   output: {
-    assetPrefix: './',
+    assetPrefix: process.env.NODE_ENV === 'production' ? '/DMLEditor/' : '/',
   },
-});
+})
