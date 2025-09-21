@@ -28,6 +28,6 @@ export default defineConfig({
     assetPrefix: '/',
   },
   output: {
-    assetPrefix: process.env.NODE_ENV === 'production' ? './DMLEditor/' : './',
+    assetPrefix: './',
   },
 })
