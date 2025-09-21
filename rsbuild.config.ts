@@ -14,6 +14,9 @@ export default defineConfig({
   html: {
     template: './index.html',
     title: 'Database Modeler',
+    scriptLoading: 'module',
+    crossorigin: true,
+    mountId: 'app',
   },
   // html: {
   //   template: './index.html',
@@ -26,6 +29,6 @@ export default defineConfig({
     assetPrefix: '/',
   },
   output: {
-    assetPrefix: process.env.NODE_ENV === 'production' ? '/DMLEditor/' : '/',
+    assetPrefix: process.env.NODE_ENV === 'production' ? './' : '/',
   },
 })
