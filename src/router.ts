@@ -7,15 +7,15 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: App,
-    redirect: '/project-list',
-    children: [
-      {
-        path: '/project-list',
-        name: 'ProjectList',
-        component: ProjectList,
-      },
-    ],
+    component: ProjectList,
+    // redirect: '/project-list',
+    // children: [
+    //   {
+    //     path: '/project-list',
+    //     name: 'ProjectList',
+    //     component: ProjectList,
+    //   },
+    // ],
   },
   {
     path: '/editor/:id',
