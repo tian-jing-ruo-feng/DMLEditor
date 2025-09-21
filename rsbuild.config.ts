@@ -23,14 +23,11 @@ export default defineConfig({
   html: {
     template: './index.html',
     title: 'Database Modeler',
-    // inject: 'body',
-    scriptLoading: 'module',
   },
   dev: {
     assetPrefix: '/',
   },
   output: {
-    assetPrefix: './',
-    cleanDistPath: true,
+    assetPrefix: '/DMLEditor/',
   },
 })
