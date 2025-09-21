@@ -20,9 +20,9 @@
     <!-- 主要内容区域 -->
     <el-splitter class="flex-1 flex overflow-hidden" lazy>
       <!-- 左侧工具面板 -->
-      <!-- <el-splitter-panel size="256" collapsible>
+      <el-splitter-panel size="256" collapsible>
         <editor-toolbox @add-table="addTable" @add-note="addNote" @set-edge-type="setEdgeType" />
-      </el-splitter-panel> -->
+      </el-splitter-panel>
       <!-- 中间画布区域 -->
       <el-splitter-panel collapsible resizable>
         <div ref="graphContainer"></div>
@@ -45,24 +45,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, Ref, computed, getCurrentInstance } from 'vue'
+import { ref, reactive, onMounted, Ref, computed } from 'vue'
 import { Graph, Shape, Cell } from '@antv/x6'
-import EditorHeader from '../components/diagram/EditorHeader.vue'
-import EditorToolbox from '../components/diagram/EditorToolbox.vue'
-import EditorProperties from '../components/diagram/EditorProperties.vue'
+import { register, getTeleport } from '@antv/x6-vue-shape'
 import { ElMessage } from 'element-plus'
 import { createTableNode, createRelationEdge, initializeGraph } from '../utils/diagramUtils'
 import { setupGraphEventHandlers } from '../utils/eventHandler'
-import { register, getTeleport } from '@antv/x6-vue-shape'
-import TableNode from '@/components/TableNode.vue'
-import type { EdgeProperty, TableField } from '@/types/modelEditor'
 import { dataTypes } from '@/constants'
 import { generateSQL } from '@/utils/sqlGenerator'
-import { useProjectsStore } from '@/stores/userProjectsStore'
+import type { EdgeProperty, TableField } from '@/types/modelEditor'
+import { type Project, projectService } from '@/utils/indexDB'
 import emitter from '@/eventBus'
-
-const projectStore = useProjectsStore()
-const { getProjectById } = projectStore
+import TableNode from '@/components/TableNode.vue'
+import EditorProperties from '../components/diagram/EditorProperties.vue'
+import EditorHeader from '../components/diagram/EditorHeader.vue'
+import EditorToolbox from '../components/diagram/EditorToolbox.vue'
 
 // 注册自定义节点
 register({
@@ -78,6 +75,7 @@ const props = defineProps<{
   id: string
 }>()
 
+const curProject = ref<Project>()
 /** 右侧属性面板大小 */
 const propertyPanelSize = ref(0)
 /** 事件监听 */
@@ -134,266 +132,13 @@ onMounted(() => {
 })
 
 // 加载项目数据
-const loadProject = (id: string) => {
-  if (id === '1') {
-    projectName.value = '电商系统数据库'
-    loadCommerceExample()
-  } else if (id === '2') {
-    projectName.value = '博客系统数据库'
-    loadBlogExample()
-  } else {
-    const curProject = getProjectById(id)
-    projectName.value = curProject?.name || '未命名项目'
-
-    const projectGraph = JSON.parse(localStorage.getItem('graph-data')!)
-    console.log(projectGraph, 'projectGraph')
-    graph.value?.fromJSON(projectGraph.graphData)
+const loadProject = async (id: string) => {
+  const [, project] = await projectService.getProjectById(Number(id))
+  if (project) {
+    curProject.value = project
+    projectName.value = project.name
+    graph.value?.fromJSON(JSON.parse(project.content!))
   }
-}
-
-// 加载电商系统示例
-const loadCommerceExample = () => {
-  if (!graph.value) return
-
-  // 用户表
-  const userTable = createTableNode({
-    id: 'user-table',
-    name: 'users',
-    comment: '用户表',
-    fields: [
-      { name: 'id', type: 'INT', primaryKey: true, notNull: true },
-      { name: 'username', type: 'VARCHAR', primaryKey: false, notNull: true },
-      { name: 'email', type: 'VARCHAR', primaryKey: false, notNull: true },
-      { name: 'password', type: 'VARCHAR', primaryKey: false, notNull: true },
-      { name: 'created_at', type: 'DATETIME', primaryKey: false, notNull: true },
-    ],
-    x: 100,
-    y: 100,
-  })
-
-  // 商品表
-  const productTable = createTableNode({
-    id: 'product-table',
-    name: 'products',
-    comment: '商品表',
-    fields: [
-      { name: 'id', type: 'INT', primaryKey: true, notNull: true },
-      { name: 'name', type: 'VARCHAR', primaryKey: false, notNull: true },
-      { name: 'price', type: 'DECIMAL', primaryKey: false, notNull: true },
-      { name: 'description', type: 'TEXT', primaryKey: false, notNull: false },
-      { name: 'stock', type: 'INT', primaryKey: false, notNull: true },
-      { name: 'category_id', type: 'INT', primaryKey: false, notNull: true },
-    ],
-    x: 500,
-    y: 100,
-  })
-
-  // 订单表
-  const orderTable = createTableNode({
-    id: 'order-table',
-    name: 'orders',
-    comment: '订单表',
-    fields: [
-      { name: 'id', type: 'INT', primaryKey: true, notNull: true },
-      { name: 'user_id', type: 'INT', primaryKey: false, notNull: true },
-      { name: 'total_amount', type: 'DECIMAL', primaryKey: false, notNull: true },
-      { name: 'status', type: 'VARCHAR', primaryKey: false, notNull: true },
-      { name: 'created_at', type: 'DATETIME', primaryKey: false, notNull: true },
-    ],
-    x: 100,
-    y: 400,
-  })
-
-  // 订单项表
-  const orderItemTable = createTableNode({
-    id: 'order-item-table',
-    name: 'order_items',
-    comment: '订单项表',
-    fields: [
-      { name: 'id', type: 'INT', primaryKey: true, notNull: true },
-      { name: 'order_id', type: 'INT', primaryKey: false, notNull: true },
-      { name: 'product_id', type: 'INT', primaryKey: false, notNull: true },
-      { name: 'quantity', type: 'INT', primaryKey: false, notNull: true },
-      { name: 'price', type: 'DECIMAL', primaryKey: false, notNull: true },
-    ],
-    x: 500,
-    y: 400,
-  })
-
-  // 添加关系
-  const userOrderEdge = createRelationEdge({
-    source: userTable.id,
-    target: orderTable.id,
-    type: 'oneToMany',
-    sourceField: 'id',
-    targetField: 'user_id',
-    comment: '用户拥有多个订单',
-  })
-
-  const orderOrderItemEdge = createRelationEdge({
-    source: orderTable.id,
-    target: orderItemTable.id,
-    type: 'oneToMany',
-    sourceField: 'id',
-    targetField: 'order_id',
-    comment: '订单包含多个订单项',
-  })
-
-  const productOrderItemEdge = createRelationEdge({
-    source: productTable.id,
-    target: orderItemTable.id,
-    type: 'oneToMany',
-    sourceField: 'id',
-    targetField: 'product_id',
-    comment: '商品包含在多个订单项中',
-  })
-
-  graph.value.addNode(userTable)
-  graph.value.addNode(productTable)
-  graph.value.addNode(orderTable)
-  graph.value.addNode(orderItemTable)
-
-  graph.value.addEdge(userOrderEdge)
-  graph.value.addEdge(orderOrderItemEdge)
-  graph.value.addEdge(productOrderItemEdge)
-}
-
-// 加载博客系统示例
-const loadBlogExample = () => {
-  if (!graph.value) return
-
-  // 用户表
-  const userTable = createTableNode({
-    id: 'user-table',
-    name: 'users',
-    comment: '用户表',
-    fields: [
-      { name: 'id', type: 'INT', primaryKey: true, notNull: true },
-      { name: 'username', type: 'VARCHAR', primaryKey: false, notNull: true },
-      { name: 'email', type: 'VARCHAR', primaryKey: false, notNull: true },
-      { name: 'password', type: 'VARCHAR', primaryKey: false, notNull: true },
-      { name: 'created_at', type: 'DATETIME', primaryKey: false, notNull: true },
-    ],
-    x: 100,
-    y: 100,
-  })
-
-  // 文章表
-  const postTable = createTableNode({
-    id: 'post-table',
-    name: 'posts',
-    comment: '文章表',
-    fields: [
-      { name: 'id', type: 'INT', primaryKey: true, notNull: true },
-      { name: 'title', type: 'VARCHAR', primaryKey: false, notNull: true },
-      { name: 'content', type: 'TEXT', primaryKey: false, notNull: true },
-      { name: 'user_id', type: 'INT', primaryKey: false, notNull: true },
-      { name: 'created_at', type: 'DATETIME', primaryKey: false, notNull: true },
-      { name: 'updated_at', type: 'DATETIME', primaryKey: false, notNull: true },
-    ],
-    x: 500,
-    y: 100,
-  })
-
-  // 评论表
-  const commentTable = createTableNode({
-    id: 'comment-table',
-    name: 'comments',
-    comment: '评论表',
-    fields: [
-      { name: 'id', type: 'INT', primaryKey: true, notNull: true },
-      { name: 'content', type: 'TEXT', primaryKey: false, notNull: true },
-      { name: 'user_id', type: 'INT', primaryKey: false, notNull: true },
-      { name: 'post_id', type: 'INT', primaryKey: false, notNull: true },
-      { name: 'created_at', type: 'DATETIME', primaryKey: false, notNull: true },
-    ],
-    x: 100,
-    y: 400,
-  })
-
-  // 标签表
-  const tagTable = createTableNode({
-    id: 'tag-table',
-    name: 'tags',
-    comment: '标签表',
-    fields: [
-      { name: 'id', type: 'INT', primaryKey: true, notNull: true },
-      { name: 'name', type: 'VARCHAR', primaryKey: false, notNull: true },
-    ],
-    x: 500,
-    y: 400,
-  })
-
-  // 文章标签关联表
-  const postTagTable = createTableNode({
-    id: 'post-tag-table',
-    name: 'post_tags',
-    comment: '文章标签关联表',
-    fields: [
-      { name: 'post_id', type: 'INT', primaryKey: true, notNull: true },
-      { name: 'tag_id', type: 'INT', primaryKey: true, notNull: true },
-    ],
-    x: 300,
-    y: 250,
-  })
-
-  // 添加关系
-  const userPostEdge = createRelationEdge({
-    source: userTable.id,
-    target: postTable.id,
-    type: 'oneToMany',
-    sourceField: 'id',
-    targetField: 'user_id',
-    comment: '用户拥有多篇文章',
-  })
-
-  const userCommentEdge = createRelationEdge({
-    source: userTable.id,
-    target: commentTable.id,
-    type: 'oneToMany',
-    sourceField: 'id',
-    targetField: 'user_id',
-    comment: '用户发表多条评论',
-  })
-
-  const postCommentEdge = createRelationEdge({
-    source: postTable.id,
-    target: commentTable.id,
-    type: 'oneToMany',
-    sourceField: 'id',
-    targetField: 'post_id',
-    comment: '文章有多条评论',
-  })
-
-  const postPostTagEdge = createRelationEdge({
-    source: postTable.id,
-    target: postTagTable.id,
-    type: 'oneToMany',
-    sourceField: 'id',
-    targetField: 'post_id',
-    comment: '文章有多个标签',
-  })
-
-  const tagPostTagEdge = createRelationEdge({
-    source: tagTable.id,
-    target: postTagTable.id,
-    type: 'oneToMany',
-    sourceField: 'id',
-    targetField: 'tag_id',
-    comment: '标签属于多篇文章',
-  })
-
-  graph.value.addNode(userTable)
-  graph.value.addNode(postTable)
-  graph.value.addNode(commentTable)
-  graph.value.addNode(tagTable)
-  graph.value.addNode(postTagTable)
-
-  graph.value.addEdge(userPostEdge)
-  graph.value.addEdge(userCommentEdge)
-  graph.value.addEdge(postCommentEdge)
-  graph.value.addEdge(postPostTagEdge)
-  graph.value.addEdge(tagPostTagEdge)
 }
 
 // 添加表
@@ -569,13 +314,12 @@ const exportJSON = () => {
 }
 
 // 保存项目
-const saveProject = () => {
-  ElMessage.success('项目已保存')
-  const dataJson = graph.value?.toJSON()
-  const curProjectGraphData = {
-    id: props.id,
-    graphData: dataJson,
+const saveProject = async () => {
+  const [, res] = await projectService.updateProject(Number(props.id), {
+    content: JSON.stringify(graph.value?.toJSON()),
+  })
+  if (res) {
+    ElMessage.success('项目已保存')
   }
-  localStorage.setItem('graph-data', JSON.stringify(curProjectGraphData))
 }
 </script>
