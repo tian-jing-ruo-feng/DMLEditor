@@ -14,14 +14,18 @@ export default defineConfig({
   html: {
     template: './index.html',
     title: 'Database Modeler',
-    scriptLoading: 'module',
-    crossorigin: true,
-    mountId: 'app',
   },
+  // html: {
+  //   template: './index.html',
+  //   title: 'Database Modeler',
+  //   scriptLoading: 'module',
+  //   crossorigin: true,
+  //   mountId: 'app',
+  // },
   dev: {
     assetPrefix: '/',
   },
   output: {
-    assetPrefix: '/DMLEditor/',
+    assetPrefix: process.env.NODE_ENV === 'production' ? '/DMLEditor/' : '/',
   },
 })
