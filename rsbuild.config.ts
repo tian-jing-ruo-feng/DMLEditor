@@ -16,6 +16,7 @@ export default defineConfig({
     title: 'Database Modeler',
     scriptLoading: 'module',
     crossorigin: true,
+    mountId: 'app',
   },
   dev: {
     assetPrefix: '/',
