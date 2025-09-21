@@ -19,18 +19,11 @@ export default defineConfig({
     crossorigin: true,
     mountId: 'app',
   },
-  // html: {
-  //   template: './index.html',
-  //   title: 'Database Modeler',
-  //   scriptLoading: 'module',
-  //   crossorigin: true,
-  //   mountId: 'app',
-  // },
   dev: {
     assetPrefix: '/',
   },
   output: {
-    assetPrefix: '/',
+    assetPrefix: process.env.NODE_ENV === 'production' ? '/DMLEditor/' : '/',
     distPath: {
       root: 'dist',
       js: 'static/js',
