@@ -116,6 +116,7 @@ watchEffect(() => {
 
   :deep(.el-card__header) {
     padding: 8px;
+    background-color: var(--el-color-primary);
   }
   :deep(.el-card__body) {
     padding: 16px;
@@ -130,6 +131,7 @@ watchEffect(() => {
 
 .table-name {
   font-weight: bold;
+  color: white;
 }
 
 .table-fields {
