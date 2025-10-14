@@ -78,16 +78,16 @@ export const setupGraphEventHandlers = (
   })
 
   graph.on('node:mouseenter', ({ node }) => {
-    const size = node.size()
+    // const size = node.size()
     // 悬浮设置port 大小
-    node.setPortProp('custom-port', {
-      attrs: {
-        fo: {
-          width: size.width,
-          height: size.height - 37,
-        },
-      },
-    })
+    // node.setPortProp('custom-port', {
+    //   attrs: {
+    //     fo: {
+    //       width: size.width,
+    //       height: size.height - 37,
+    //     },
+    //   },
+    // })
   })
 
   graph.on('node:mouseleave', ({ node }) => {})

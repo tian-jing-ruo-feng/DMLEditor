@@ -47,6 +47,7 @@ export const createTableNode = ({
       groups: {
         list: {
           markup: [
+            // 自定义的port容器
             {
               tagName: 'foreignObject',
               selector: 'fo',
@@ -65,11 +66,71 @@ export const createTableNode = ({
           },
           position: [0, 37],
         },
+        top: {
+          position: 'top',
+          attrs: {
+            circle: {
+              stroke: '#5F95FF',
+              strokeWidth: 1,
+              r: 4,
+              magnet: true,
+            },
+          },
+        },
+        left: {
+          position: 'left',
+          attrs: {
+            circle: {
+              stroke: '#5F95FF',
+              strokeWidth: 1,
+              r: 4,
+              magnet: true,
+            },
+          },
+        },
+        right: {
+          position: 'right',
+          attrs: {
+            circle: {
+              stroke: '#5F95FF',
+              strokeWidth: 1,
+              r: 4,
+              magnet: true,
+            },
+          },
+        },
+        bottom: {
+          position: 'bottom',
+          attrs: {
+            circle: {
+              stroke: '#5F95FF',
+              strokeWidth: 1,
+              r: 4,
+              magnet: true,
+            },
+          },
+        },
       },
       items: [
+        // {
+        //   id: 'custom-port',
+        //   group: 'list',
+        // },
         {
-          id: 'custom-port',
-          group: 'list',
+          id: 'port-top',
+          group: 'top',
+        },
+        {
+          id: 'port-right',
+          group: 'right',
+        },
+        {
+          id: 'port-bottom',
+          group: 'bottom',
+        },
+        {
+          id: 'port-left',
+          group: 'left',
         },
       ],
     },
@@ -235,23 +296,14 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
     autoResize: true,
     connecting: {
       router: 'manhattan',
-      connector: {
-        name: 'rounded',
-        args: {
-          radius: 8,
-        },
+      sourceAnchor: {
+        name: 'center', // 锚点会在节点中心
       },
-      anchor: {
-        name: 'center',
-        args: {
-          rotate: true,
-        },
+      targetAnchor: {
+        name: 'center', // 锚点会在节点中心
       },
+      // 使用锚点作为连接点
       connectionPoint: 'boundary',
-      allowBlank: false,
-      snap: {
-        radius: 20,
-      },
       createEdge() {
         return new Shape.Edge({
           attrs: {
@@ -264,16 +316,16 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
               },
             },
           },
-          router: {
-            name: 'manhattan',
-          },
+          // router: {
+          //   name: 'manhattan',
+          // },
           connector: {
             name: 'rounded',
             args: {
               radius: 8,
             },
           },
-          zIndex: 0,
+          zIndex: -1,
           data: {
             type: currentEdgeType,
             sourceField: '',
@@ -282,16 +334,63 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
           },
         })
       },
-      validateConnection({ sourceView, targetView, sourceMagnet, targetMagnet }) {
-        if (sourceView === targetView) {
-          return false
-        }
-        // if (!sourceMagnet || !targetMagnet) {
-        //   return false
-        // }
-        return true
-      },
     },
+    // connecting: {
+    //   router: 'manhattan',
+    //   connector: {
+    //     name: 'rounded',
+    //     args: {
+    //       radius: 8,
+    //     },
+    //   },
+    //   anchor: {
+    //     name: 'center',
+    //   },
+    //   connectionPoint: 'boundary',
+    //   allowBlank: false,
+    //   snap: {
+    //     radius: 20,
+    //   },
+    //   createEdge() {
+    //     return new Shape.Edge({
+    //       attrs: {
+    //         line: {
+    //           stroke: '#5F6368',
+    //           strokeWidth: 2,
+    //           targetMarker: {
+    //             name: 'classic',
+    //             size: 8,
+    //           },
+    //         },
+    //       },
+    //       router: {
+    //         name: 'manhattan',
+    //       },
+    //       connector: {
+    //         name: 'rounded',
+    //         args: {
+    //           radius: 8,
+    //         },
+    //       },
+    //       zIndex: -1,
+    //       data: {
+    //         type: currentEdgeType,
+    //         sourceField: '',
+    //         targetField: '',
+    //         comment: '',
+    //       },
+    //     })
+    //   },
+    //   validateConnection({ sourceView, targetView, sourceMagnet, targetMagnet }) {
+    //     if (sourceView === targetView) {
+    //       return false
+    //     }
+    //     // if (!sourceMagnet || !targetMagnet) {
+    //     //   return false
+    //     // }
+    //     return true
+    //   },
+    // },
     highlighting: {
       magnetAvailable: {
         name: 'stroke',
