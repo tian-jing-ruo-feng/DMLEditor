@@ -1,4 +1,4 @@
-import { Graph, Cell } from '@antv/x6'
+import { Graph, Cell, Node } from '@antv/x6'
 import { Ref } from 'vue'
 import type { EdgeProperty, TableField } from '@/types/modelEditor'
 import emitter from '@/eventBus'
@@ -25,6 +25,10 @@ export const setupGraphEventHandlers = (
 
   // 监听选择变化
   graph.on('cell:click', ({ cell }) => {
+    // 测试
+    // const markup = cell.getMarkup()
+    // console.log(markup, '<<<<< markUp')
+
     emitter.emit('node:click')
 
     selectedCell.value?.removeTools()
@@ -72,6 +76,21 @@ export const setupGraphEventHandlers = (
       cell.removeTool('button-remove')
     }
   })
+
+  graph.on('node:mouseenter', ({ node }) => {
+    const size = node.size()
+    // 悬浮设置port 大小
+    node.setPortProp('custom-port', {
+      attrs: {
+        fo: {
+          width: size.width,
+          height: size.height - 37,
+        },
+      },
+    })
+  })
+
+  graph.on('node:mouseleave', ({ node }) => {})
 
   // 点击空白区域取消选择
   graph.on('blank:click', () => {

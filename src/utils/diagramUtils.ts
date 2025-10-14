@@ -1,4 +1,4 @@
-import { Shape, Graph } from '@antv/x6'
+import { Shape, Graph, Node } from '@antv/x6'
 import type { TableField } from '@/types/modelEditor'
 import { Selection } from '@antv/x6-plugin-selection'
 import { History } from '@antv/x6-plugin-history'
@@ -45,34 +45,32 @@ export const createTableNode = ({
     },
     ports: {
       groups: {
-        in: {
-          position: 'left',
+        list: {
+          markup: [
+            {
+              tagName: 'foreignObject',
+              selector: 'fo',
+              style: {
+                transform: 'none',
+                // border: '1px solid #000',
+              },
+            },
+          ],
           attrs: {
-            circle: {
-              r: 4,
+            fo: {
+              width: 0,
+              height: 0,
               magnet: true,
-              stroke: '#5F6368',
-              strokeWidth: 1,
-              fill: '#fff',
             },
           },
-        },
-        out: {
-          position: 'right',
-          attrs: {
-            circle: {
-              r: 4,
-              magnet: true,
-              stroke: '#5F6368',
-              strokeWidth: 1,
-              fill: '#fff',
-            },
-          },
+          position: [0, 37],
         },
       },
       items: [
-        { id: 'port-left', group: 'in' },
-        { id: 'port-right', group: 'out' },
+        {
+          id: 'custom-port',
+          group: 'list',
+        },
       ],
     },
     data: {
@@ -81,7 +79,7 @@ export const createTableNode = ({
       comment,
       fields,
     },
-  }
+  } as Node.Properties
 }
 
 /**
@@ -105,12 +103,32 @@ export const createRelationEdge = ({
   let sourceMarker = {}
   let targetMarker = {}
 
+  const marker = {
+    tagName: 'image',
+    'xlink:href': '/ERtu-yiduiduo-3.png',
+    width: 32,
+    height: 32,
+    x: -1,
+    y: -16,
+  }
+  const tMarker = {
+    tagName: 'image',
+    'xlink:href': '/ERtu-yiduiduo-4.png',
+    width: 32,
+    height: 32,
+    x: -1,
+    y: -16,
+  }
   if (type === 'oneToOne') {
-    sourceMarker = { name: 'circle', size: 6 }
+    // sourceMarker = { name: 'circle', size: 6 }
+    sourceMarker = { ...marker }
     targetMarker = { name: 'circle', size: 6 }
   } else if (type === 'oneToMany') {
-    sourceMarker = { name: 'circle', size: 6 }
-    targetMarker = { name: 'classic', size: 8 }
+    // sourceMarker = { name: 'circle', size: 6 }
+    sourceMarker = { ...marker }
+
+    // targetMarker = { name: 'classic', size: 8 }
+    targetMarker = { ...tMarker }
   } else if (type === 'manyToMany') {
     sourceMarker = { name: 'classic', size: 8 }
     targetMarker = { name: 'classic', size: 8 }
@@ -177,6 +195,23 @@ export const createRelationEdge = ({
  * @returns 初始化后的图表实例
  */
 export const initializeGraph = (container: HTMLElement, currentEdgeType: string = 'oneToMany') => {
+  // Graph.registerPortLayout(
+  //   'erPortPosition',
+  //   (portsPositionArgs, elemBBox) => {
+  //     console.log(portsPositionArgs, elemBBox, 'portsPositionArgs, elemBBox')
+  //     return portsPositionArgs.map((_, index) => {
+  //       return {
+  //         position: {
+  //           x: 0,
+  //           y: elemBBox.height,
+  //         },
+  //         angle: 0,
+  //       }
+  //     })
+  //   },
+  //   true,
+  // )
+
   const graph = new Graph({
     container,
     grid: {
@@ -206,7 +241,12 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
           radius: 8,
         },
       },
-      anchor: 'center',
+      anchor: {
+        name: 'center',
+        args: {
+          rotate: true,
+        },
+      },
       connectionPoint: 'boundary',
       allowBlank: false,
       snap: {
@@ -246,9 +286,9 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
         if (sourceView === targetView) {
           return false
         }
-        if (!sourceMagnet || !targetMagnet) {
-          return false
-        }
+        // if (!sourceMagnet || !targetMagnet) {
+        //   return false
+        // }
         return true
       },
     },
@@ -256,9 +296,9 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
       magnetAvailable: {
         name: 'stroke',
         args: {
-          padding: 4,
+          padding: 0,
           attrs: {
-            strokeWidth: 2,
+            strokeWidth: 10,
             stroke: '#4F46E5',
           },
         },
