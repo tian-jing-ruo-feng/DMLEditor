@@ -1,4 +1,4 @@
-import { Shape, Graph, Node } from '@antv/x6'
+import { Shape, Graph, Node, Edge } from '@antv/x6'
 import type { TableField } from '@/types/modelEditor'
 import { Selection } from '@antv/x6-plugin-selection'
 import { History } from '@antv/x6-plugin-history'
@@ -324,6 +324,7 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
     autoResize: true,
     connecting: {
       router: 'manhattan',
+      allowBlank: false,
       sourceAnchor: {
         name: 'center', // 锚点会在节点中心
       },
@@ -338,15 +339,28 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
             line: {
               stroke: '#5F6368',
               strokeWidth: 2,
-              targetMarker: {
-                name: 'classic',
-                size: 8,
-              },
+              // targetMarker: {
+              //   name: 'classic',
+              //   size: 8,
+              // },
+              // targetMarker: {
+              //   tagName: 'image',
+              //   'xlink:href': '/ERtu-yiduiduo-3.png',
+              //   width: 32,
+              //   height: 32,
+              //   x: -1,
+              //   y: -16,
+              // },
+              // sourceMarker: {
+              //   tagName: 'image',
+              //   'xlink:href': '/ERtu-yiduiduo-3.png',
+              //   width: 32,
+              //   height: 32,
+              //   x: -1,
+              //   y: -16,
+              // },
             },
           },
-          // router: {
-          //   name: 'manhattan',
-          // },
           connector: {
             name: 'rounded',
             args: {
@@ -362,63 +376,18 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
           },
         })
       },
+      validateConnection({ sourceView, targetView, sourceMagnet, targetMagnet }) {
+        console.log(sourceView, targetView, 'sourceView, targetView')
+        // 不允许自连
+        if (sourceView === targetView) {
+          return false
+        }
+        // if (!sourceMagnet || !targetMagnet) {
+        //   return false
+        // }
+        return true
+      },
     },
-    // connecting: {
-    //   router: 'manhattan',
-    //   connector: {
-    //     name: 'rounded',
-    //     args: {
-    //       radius: 8,
-    //     },
-    //   },
-    //   anchor: {
-    //     name: 'center',
-    //   },
-    //   connectionPoint: 'boundary',
-    //   allowBlank: false,
-    //   snap: {
-    //     radius: 20,
-    //   },
-    //   createEdge() {
-    //     return new Shape.Edge({
-    //       attrs: {
-    //         line: {
-    //           stroke: '#5F6368',
-    //           strokeWidth: 2,
-    //           targetMarker: {
-    //             name: 'classic',
-    //             size: 8,
-    //           },
-    //         },
-    //       },
-    //       router: {
-    //         name: 'manhattan',
-    //       },
-    //       connector: {
-    //         name: 'rounded',
-    //         args: {
-    //           radius: 8,
-    //         },
-    //       },
-    //       zIndex: -1,
-    //       data: {
-    //         type: currentEdgeType,
-    //         sourceField: '',
-    //         targetField: '',
-    //         comment: '',
-    //       },
-    //     })
-    //   },
-    //   validateConnection({ sourceView, targetView, sourceMagnet, targetMagnet }) {
-    //     if (sourceView === targetView) {
-    //       return false
-    //     }
-    //     // if (!sourceMagnet || !targetMagnet) {
-    //     //   return false
-    //     // }
-    //     return true
-    //   },
-    // },
     highlighting: {
       magnetAvailable: {
         name: 'stroke',

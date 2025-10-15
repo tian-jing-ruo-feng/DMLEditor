@@ -3,6 +3,7 @@ import { Ref } from 'vue'
 import type { EdgeProperty, TableField } from '@/types/modelEditor'
 import emitter from '@/eventBus'
 
+// 设置节点port 可见性
 function setNodePortsVisiblity(node: Node, visble: 'visible' | 'hidden') {
   node.portProp('port-left', 'attrs/circle/style/visibility', visble)
   node.portProp('port-right', 'attrs/circle/style/visibility', visble)
@@ -28,6 +29,19 @@ export const setupGraphEventHandlers = (
   },
   edgeProps: EdgeProperty,
 ) => {
+  // 注册自定义边起始箭头
+  Graph.registerEdgeTool('circle-source-arrowhead', {
+    inherit: 'source-arrowhead',
+    tagName: 'circle',
+    attrs: {
+      r: 8,
+      fill: '#fe854f',
+      // 'fill-opacity': 0.3,
+      stroke: '#fe854f',
+      'stroke-width': 4,
+      cursor: 'move',
+    },
+  })
   console.log(graph.isSnaplineEnabled(), '对齐线是否启用')
 
   // 监听选择变化
@@ -104,6 +118,24 @@ export const setupGraphEventHandlers = (
 
   graph.on('node:mouseleave', ({ node }) => {
     setNodePortsVisiblity(node, 'hidden')
+  })
+
+  graph.on('edge:mouseenter', ({ cell }) => {
+    cell.addTools([
+      'circle-source-arrowhead',
+      {
+        name: 'target-arrowhead',
+        args: {
+          attrs: {
+            size: 10,
+            fill: '#fe854f',
+          },
+        },
+      },
+    ])
+  })
+  graph.on('edge:mouseleave', ({ cell }) => {
+    cell.removeTools()
   })
 
   // 点击空白区域取消选择

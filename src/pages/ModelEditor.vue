@@ -195,18 +195,19 @@ const setEdgeType = (type: string) => {
 }
 
 // 更新边类型
-const updateEdgeType = () => {
+const updateEdgeType = (type: string) => {
   if (graph.value && selectedCell.value && selectedCell.value.isEdge()) {
     const edge = selectedCell.value
-
-    edge.setData({
-      ...edge.getData(),
-      type: edgeProps.type,
+    edge.updateData({
+      type,
     })
+    // edge.setData({
+    //   ...edge.getData(),
+    //   // type: edgeProps.type,
+    // })
 
     // 更新边的标签
-    const labelText =
-      edgeProps.type === 'oneToOne' ? '1:1' : edgeProps.type === 'oneToMany' ? '1:N' : 'N:M'
+    const labelText = type === 'oneToOne' ? '1:1' : type === 'oneToMany' ? '1:N' : 'N:M'
     edge.setLabels([
       {
         attrs: {
@@ -236,13 +237,13 @@ const updateEdgeType = () => {
     let sourceMarker = {}
     let targetMarker = {}
 
-    if (edgeProps.type === 'oneToOne') {
+    if (type === 'oneToOne') {
       sourceMarker = { name: 'circle', size: 6 }
       targetMarker = { name: 'circle', size: 6 }
-    } else if (edgeProps.type === 'oneToMany') {
+    } else if (type === 'oneToMany') {
       sourceMarker = { name: 'circle', size: 6 }
       targetMarker = { name: 'classic', size: 8 }
-    } else if (edgeProps.type === 'manyToMany') {
+    } else if (type === 'manyToMany') {
       sourceMarker = { name: 'classic', size: 8 }
       targetMarker = { name: 'classic', size: 8 }
     }

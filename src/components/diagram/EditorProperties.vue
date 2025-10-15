@@ -112,7 +112,7 @@
 <script setup lang="ts">
 import { nextTick, reactive, watch } from 'vue'
 import { InfoFilled, Plus, Delete } from '@element-plus/icons-vue'
-import { Cell, Node } from '@antv/x6'
+import { Cell, Edge, Node } from '@antv/x6'
 
 // 定义属性
 interface TableField {
@@ -146,8 +146,8 @@ const props = defineProps<{
 
 // 定义事件
 const emit = defineEmits<{
-  'update-edge-type': []
-  'update-edge': []
+  'update-edge-type': [type: string]
+  'update-edge': [edgeProps: EdgeProps]
 }>()
 
 // 本地响应式状态
@@ -217,10 +217,10 @@ const removeField = (index: number) => {
 }
 
 const updateEdgeType = () => {
-  emit('update-edge-type')
+  emit('update-edge-type', localEdgeProps.type)
 }
 
 const updateEdge = () => {
-  emit('update-edge')
+  emit('update-edge', localEdgeProps)
 }
 </script>
