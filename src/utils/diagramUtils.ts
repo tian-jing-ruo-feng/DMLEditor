@@ -119,18 +119,46 @@ export const createTableNode = ({
         {
           id: 'port-top',
           group: 'top',
+          attrs: {
+            circle: {
+              style: {
+                visibility: 'hidden',
+              },
+            },
+          },
         },
         {
           id: 'port-right',
           group: 'right',
+          attrs: {
+            circle: {
+              style: {
+                visibility: 'hidden',
+              },
+            },
+          },
         },
         {
           id: 'port-bottom',
           group: 'bottom',
+          attrs: {
+            circle: {
+              style: {
+                visibility: 'hidden',
+              },
+            },
+          },
         },
         {
           id: 'port-left',
           group: 'left',
+          attrs: {
+            circle: {
+              style: {
+                visibility: 'hidden',
+              },
+            },
+          },
         },
       ],
     },

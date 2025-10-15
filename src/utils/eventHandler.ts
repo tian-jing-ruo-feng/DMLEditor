@@ -3,6 +3,13 @@ import { Ref } from 'vue'
 import type { EdgeProperty, TableField } from '@/types/modelEditor'
 import emitter from '@/eventBus'
 
+function setNodePortsVisiblity(node: Node, visble: 'visible' | 'hidden') {
+  node.portProp('port-left', 'attrs/circle/style/visibility', visble)
+  node.portProp('port-right', 'attrs/circle/style/visibility', visble)
+  node.portProp('port-top', 'attrs/circle/style/visibility', visble)
+  node.portProp('port-bottom', 'attrs/circle/style/visibility', visble)
+}
+
 /**
  * 设置图表事件监听
  * @param graph 图表实例
@@ -78,6 +85,11 @@ export const setupGraphEventHandlers = (
   })
 
   graph.on('node:mouseenter', ({ node }) => {
+    setNodePortsVisiblity(node, 'visible')
+
+    node.addTools({
+      name: 'button-remove',
+    })
     // const size = node.size()
     // 悬浮设置port 大小
     // node.setPortProp('custom-port', {
@@ -90,7 +102,9 @@ export const setupGraphEventHandlers = (
     // })
   })
 
-  graph.on('node:mouseleave', ({ node }) => {})
+  graph.on('node:mouseleave', ({ node }) => {
+    setNodePortsVisiblity(node, 'hidden')
+  })
 
   // 点击空白区域取消选择
   graph.on('blank:click', () => {
