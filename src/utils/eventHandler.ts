@@ -29,19 +29,6 @@ export const setupGraphEventHandlers = (
   },
   edgeProps: EdgeProperty,
 ) => {
-  // 注册自定义边起始箭头
-  Graph.registerEdgeTool('circle-source-arrowhead', {
-    inherit: 'source-arrowhead',
-    tagName: 'circle',
-    attrs: {
-      r: 8,
-      fill: '#fe854f',
-      // 'fill-opacity': 0.3,
-      stroke: '#fe854f',
-      'stroke-width': 4,
-      cursor: 'move',
-    },
-  })
   console.log(graph.isSnaplineEnabled(), '对齐线是否启用')
 
   // 监听选择变化

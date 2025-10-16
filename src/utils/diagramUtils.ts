@@ -300,6 +300,19 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
   //   },
   //   true,
   // )
+  // 注册自定义边起始箭头
+  Graph.registerEdgeTool('circle-source-arrowhead', {
+    inherit: 'source-arrowhead',
+    tagName: 'circle',
+    attrs: {
+      r: 8,
+      fill: '#fe854f',
+      // 'fill-opacity': 0.3,
+      stroke: '#fe854f',
+      'stroke-width': 4,
+      cursor: 'move',
+    },
+  })
 
   const graph = new Graph({
     container,
