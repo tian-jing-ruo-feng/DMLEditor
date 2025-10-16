@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, Ref, computed } from 'vue'
-import { Graph, Shape, Cell } from '@antv/x6'
+import { Graph, Shape, Cell, Util } from '@antv/x6'
 import { register, getTeleport } from '@antv/x6-vue-shape'
 import { ElMessage } from 'element-plus'
 import { createTableNode, createRelationEdge, initializeGraph } from '../utils/diagramUtils'
@@ -137,7 +137,9 @@ const loadProject = async (id: string) => {
   if (project) {
     curProject.value = project
     projectName.value = project.name
-    graph.value?.fromJSON(JSON.parse(project.content!))
+    const content = JSON.parse(project.content!)
+    console.log(content, '<<<<< 画布数据')
+    graph.value?.fromJSON(content)
   }
 }
 
@@ -239,7 +241,22 @@ const updateEdgeType = (type: string) => {
 
     if (type === 'oneToOne') {
       sourceMarker = { name: 'circle', size: 6 }
-      targetMarker = { name: 'circle', size: 6 }
+      // sourceMarker = {
+      //   tagName: 'image',
+      //   'xlink:href': '/ERtu-yiduiduo-4.png',
+      //   width: 32,
+      //   height: 32,
+      //   x: 0,
+      //   y: -16,
+      // }
+      // targetMarker = { name: 'circle', size: 6 }
+      targetMarker = {
+        tagName: 'path',
+        fill: 'yellow', // 使用自定义填充色
+        stroke: 'green', // 使用自定义边框色
+        strokeWidth: 2,
+        d: 'M 20 -10 0 0 20 10 Z',
+      }
     } else if (type === 'oneToMany') {
       sourceMarker = { name: 'circle', size: 6 }
       targetMarker = { name: 'classic', size: 8 }

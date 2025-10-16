@@ -120,6 +120,18 @@ export const setupGraphEventHandlers = (
     setNodePortsVisiblity(node, 'hidden')
   })
 
+  // graph.on('edge:added', ({ edge }) => {
+  //   const source = edge.getSourceCellId()
+  //   console.log(source, 'source cell id')
+  // })
+  graph.on('edge:connected', ({ isNew, edge }) => {
+    if (isNew) {
+      // 设置新建边的起点和终点
+      // 设置边的连接起点/终点为 节点类型，非 port 连接桩
+      edge.setSource({ cell: edge.getSourceCellId() })
+      edge.setTarget({ cell: edge.getTargetCellId() })
+    }
+  })
   graph.on('edge:mouseenter', ({ cell }) => {
     cell.addTools([
       'circle-source-arrowhead',

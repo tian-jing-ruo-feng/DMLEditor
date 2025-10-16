@@ -325,13 +325,9 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
     connecting: {
       router: 'manhattan',
       allowBlank: false,
-      sourceAnchor: {
-        name: 'center', // 锚点会在节点中心
-      },
-      targetAnchor: {
-        name: 'center', // 锚点会在节点中心
-      },
-      // 使用锚点作为连接点
+      // 锚点：设置再正交点
+      // anchor: 'orth',
+      // 使用boundary作为连接点
       connectionPoint: 'boundary',
       createEdge() {
         return new Shape.Edge({
@@ -339,6 +335,14 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
             line: {
               stroke: '#5F6368',
               strokeWidth: 2,
+              // sourceMarker: {
+              //   tagName: 'image',
+              //   'xlink:href': '/ERtu-yiduiduo-3.png',
+              //   width: 32,
+              //   height: 32,
+              //   x: -8,
+              //   y: -16,
+              // },
               // targetMarker: {
               //   name: 'classic',
               //   size: 8,
@@ -377,7 +381,6 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
         })
       },
       validateConnection({ sourceView, targetView, sourceMagnet, targetMagnet }) {
-        console.log(sourceView, targetView, 'sourceView, targetView')
         // 不允许自连
         if (sourceView === targetView) {
           return false
