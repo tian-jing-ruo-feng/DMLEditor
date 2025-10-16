@@ -117,6 +117,25 @@ export const setupGraphEventHandlers = (
       // 设置边的连接起点/终点为 节点类型，非 port 连接桩
       edge.setSource({ cell: edge.getSourceCellId() })
       edge.setTarget({ cell: edge.getTargetCellId() })
+      edge.attr({
+        line: {
+          sourceMarker: {
+            tagName: 'image',
+            'xlink:href': '/ERtu-yiduiduo-6.png',
+            width: 32,
+            height: 32,
+            y: -16,
+            // attrs: {
+            // transform: `rotate(-10 50 100)
+            //    translate(-36 15.5)
+            //    skewX(40)
+            //    scale(1 0.5)`,
+            // },
+            // 设置大小转换
+            transform: 'scale(0.5, 1)',
+          },
+        },
+      })
     }
   })
   graph.on('edge:mouseenter', ({ cell }) => {

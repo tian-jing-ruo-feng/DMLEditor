@@ -283,6 +283,20 @@ export const createRelationEdge = ({
  * @param currentEdgeType 当前边类型
  * @returns 初始化后的图表实例
  */
+// 注册自定义边起始箭头
+Graph.registerEdgeTool('circle-source-arrowhead', {
+  inherit: 'source-arrowhead',
+  tagName: 'circle',
+  attrs: {
+    r: 8,
+    fill: '#fe854f',
+    // 'fill-opacity': 0.3,
+    stroke: '#fe854f',
+    'stroke-width': 4,
+    cursor: 'move',
+  },
+})
+
 export const initializeGraph = (container: HTMLElement, currentEdgeType: string = 'oneToMany') => {
   // Graph.registerPortLayout(
   //   'erPortPosition',
@@ -300,19 +314,6 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
   //   },
   //   true,
   // )
-  // 注册自定义边起始箭头
-  Graph.registerEdgeTool('circle-source-arrowhead', {
-    inherit: 'source-arrowhead',
-    tagName: 'circle',
-    attrs: {
-      r: 8,
-      fill: '#fe854f',
-      // 'fill-opacity': 0.3,
-      stroke: '#fe854f',
-      'stroke-width': 4,
-      cursor: 'move',
-    },
-  })
 
   const graph = new Graph({
     container,
@@ -338,8 +339,8 @@ export const initializeGraph = (container: HTMLElement, currentEdgeType: string 
     connecting: {
       router: 'manhattan',
       allowBlank: false,
-      // 锚点：设置再正交点
-      // anchor: 'orth',
+      // 锚点：设置正交点
+      anchor: 'orth',
       // 使用boundary作为连接点
       connectionPoint: 'boundary',
       createEdge() {
